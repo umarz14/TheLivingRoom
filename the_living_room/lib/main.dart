@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'placeholder_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -50,6 +51,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    PlaceholderWidget(Colors.white),
+    PlaceholderWidget(Colors.deepOrange),
+    PlaceholderWidget(Colors.green)
+  ];
   int _counter = 0;
 
   void _incrementCounter() {
@@ -107,11 +114,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+
+      /*tutorial has a body: code that goes
+      body: _children[_currentIndex],
+      */
+      //nav bar to flip between pages
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentIndex,//will be set when new tab tapped
+        items: [
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.home),
+            title: new Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.mail),
+            title: new Text('Message'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.note),
+            title: new Text('Notes'),
+          )
+        ],
+      ),
     );
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 }
