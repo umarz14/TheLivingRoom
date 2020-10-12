@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'first_screen.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
+  @override
+  _Dashboard createState() => _Dashboard();
+}
+
+class _Dashboard extends State<Dashboard>{
   @override
   Widget build(BuildContext context) {
     final avatar = Padding(

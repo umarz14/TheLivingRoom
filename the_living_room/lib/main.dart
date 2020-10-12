@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'first_screen.dart';
 import 'placeholder_widget.dart';
 
 void main() {
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'TheLivingRoom'),
+      home:UserLogin(),
+      //home: MyHomePage(title: 'TheLivingRoom'),
     );
   }
 }
@@ -38,7 +40,6 @@ class MyHomePage extends StatefulWidget {
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
-
   // This class is the configuration for the state. It holds the values (in this
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
@@ -85,6 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
 
+      /*
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -116,19 +118,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
 
-      //this will change the background color, can use to call other
-      //widgets.
-      //body: _children[_currentIndex],
 
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
-
-      /*tutorial has a body: code that goes
-      body: _children[_currentIndex],
       */
+      /*tutorial has a body: code that goes*/
+      body: _children[_currentIndex],
+
       //nav bar to flip between pages
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
