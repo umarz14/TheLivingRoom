@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_living_room/main.dart';
 import 'dashboard.dart';
 
 class UserLogin extends StatefulWidget {
@@ -60,7 +61,9 @@ class _UserLoginState extends State<UserLogin> {
               borderRadius: BorderRadius.circular(50)
           ),
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+            //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage(title:'welcome Back')));
+
           },
         ),
       ),
