@@ -55,8 +55,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     PlaceholderWidget(Colors.white),
-    PlaceholderWidget(Colors.deepOrange),
-    PlaceholderWidget(Colors.green)
+    ToDoApp(),
+    PlaceholderWidget(Colors.green),
+
   ];
   int _counter = 0;
 
