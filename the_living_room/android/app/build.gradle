@@ -1,4 +1,4 @@
-def localProperties = new Properties()
+//def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
     localPropertiesFile.withReader('UTF-8') { reader ->
@@ -67,5 +67,7 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation "androidx.constraintlayout:constraintlayout:2.0.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth:19.4.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
 }
