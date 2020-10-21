@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "624604844344",
+    "firebase_url": "https://the-living-room-efaee.firebaseio.com",
+    "project_id": "the-living-room-efaee",
+    "storage_bucket": "the-living-room-efaee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624604844344:android:5c85be4fc9e8478df131cd",
+        "android_client_info": {
+          "package_name": "com.example.the_living_room"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624604844344-g14a535llukbu2jp8hf7rq5e4ggbvcsu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMm7gHxtWeb-53xC8UiKIRChFqW0CYVVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624604844344-g14a535llukbu2jp8hf7rq5e4ggbvcsu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
