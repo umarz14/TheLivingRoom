@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/TodoApp.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'first_screen.dart';
 import 'placeholder_widget.dart';
-import 'dashboard.dart';
 import 'notes.dart';
 import 'LoginPage.dart';
 
