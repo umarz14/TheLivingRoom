@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'to_do_card.dart';
 import 'todo.dart';
 
-class  ToDoApp extends StatelessWidget {
+class ToDoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,7 +11,6 @@ class  ToDoApp extends StatelessWidget {
     );
   }
 }
-
 
 class ToDoList extends StatefulWidget {
   @override
@@ -47,31 +46,27 @@ class _ToDoListState extends State<ToDoList> {
 
   // This function creates a new screen in top of our current screen where
   // one can add items
-  void pushAddTodoScreen(){
+  void pushAddTodoScreen() {
     //push page onto the stack; yes stack literally a a stack
     Navigator.of(context).push(
-      // MaterialapageRoute automatically animates a screen entry
-      // We will also use this page to a back button to close itself(does itself)
-        MaterialPageRoute(
-            builder: (context){
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text('New Task'),
-                ),
-                body: TextField(
-                  decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(16),
-                      hintText: 'What do you have to do?'
-                  ),
-                  onSubmitted: (toDoTask){
-                    addTodoItem(toDoTask);
-                    Navigator.pop(context); // Close the New Task Screen
-                  },
-                ),
-              );
-            }
-        )
-    );
+        // MaterialapageRoute automatically animates a screen entry
+        // We will also use this page to a back button to close itself(does itself)
+        MaterialPageRoute(builder: (context) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('New Task'),
+        ),
+        body: TextField(
+          decoration: InputDecoration(
+              contentPadding: const EdgeInsets.all(16),
+              hintText: 'What do you have to do?'),
+          onSubmitted: (toDoTask) {
+            addTodoItem(toDoTask);
+            Navigator.pop(context); // Close the New Task Screen
+          },
+        ),
+      );
+    }));
   }
 
   @override
@@ -83,17 +78,16 @@ class _ToDoListState extends State<ToDoList> {
       ),
       body: ListView.builder(
           itemCount: tdl.length,
-          itemBuilder: (context, index){
+          itemBuilder: (context, index) {
             return ToDoCard(
               toDoItem: tdl[index],
-              delete: (){
+              delete: () {
                 setState(() {
                   tdl.remove(tdl[index]);
                 });
               },
             );
-          }
-      ),
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: pushAddTodoScreen,
         tooltip: 'Add Task',
