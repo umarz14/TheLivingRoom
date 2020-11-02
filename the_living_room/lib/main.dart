@@ -3,6 +3,8 @@ import 'package:the_living_room/TodoApp/TodoApp.dart';
 import 'placeholder_widget.dart';
 import 'notes.dart';
 import 'LoginPage.dart';
+import 'household.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -59,7 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _children = [
     PlaceholderWidget(Colors.white),
     ToDoApp(),
-    Notes()
+    Notes(),
+    household()
   ];
 
   @override
@@ -89,6 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.note),
             title: new Text('Notes'),
+          ),
+          BottomNavigationBarItem(
+            icon: new Icon(Icons.settings),
+            title: new Text('Settings'),
           ),
         ],
       ),
