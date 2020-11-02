@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Notes extends StatelessWidget {
   @override
@@ -15,8 +16,9 @@ class NotesModel {
   String title;
   String note;
   String now;
+  String userName;
 
-  NotesModel({this.title, this.note, this.now});
+  NotesModel({this.title, this.note, this.now, this.userName});
 }
 
 class NotesList extends StatefulWidget {
@@ -30,10 +32,9 @@ class _NotesListState extends State<NotesList> {
   // current value of the TextField.
   final myController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  int count = 2;
 
   List<NotesModel> tdl = [
-    NotesModel(title: 'Note 1', note: 'example note', now: ''),
+    NotesModel(title: '', note: 'example note', now: 'date, time', userName: 'user'),
   ];
 
   @override
@@ -44,14 +45,30 @@ class _NotesListState extends State<NotesList> {
     super.dispose();
   } // End of Dispose
 
-  void addNoteItem(String entry) {
-    String currentTitle = "Note " + count.toString();
-    count = count + 1;
+  void addNoteItem(String entry) async{
+    String currentTitle = "Title";
     DateTime time = DateTime.now();
     DateFormat formatter = DateFormat.yMd().add_jm();
     String formatted = formatter.format(time);
+
+    String name = 'Test';
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth != null) { 
+      //final Future<FirebaseUser> user = auth.currentUser();
+      FirebaseUser user = await auth.currentUser();
+      if(user != null) {
+        name = user.displayName;
+      }
+      else {
+        name = "user is null";
+      }
+    }
+    else{
+      name = "auth is null";
+    }
+
     setState(() {
-      tdl.add(NotesModel(title: currentTitle, note: entry, now: formatted));
+      tdl.add(NotesModel(title: currentTitle, note: entry, now: formatted, userName: name));
     });
   } // End of addTodoItem
 
@@ -90,7 +107,7 @@ class _NotesListState extends State<NotesList> {
 
   // This function creates a new screen in top of our current screen where
   // one can add items
-  void pushAddTodoScreen(){
+  void pushAddNotesScreen(){
 
     //push page onto the stack; yes stack literally a a stack
     Navigator.of(context).push(
@@ -105,10 +122,11 @@ class _NotesListState extends State<NotesList> {
                 body:
 
                 TextField(
-
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
                   decoration:
                   InputDecoration(
-                      contentPadding: const EdgeInsets.all(16),
+                      //contentPadding: const EdgeInsets.all(16),
                       hintText: 'Enter a note',
                   ),
                   onSubmitted: (newnote){
@@ -118,7 +136,7 @@ class _NotesListState extends State<NotesList> {
                     }
                     else{
                       _showMyDialog();
-                      pushAddTodoScreen();
+                      pushAddNotesScreen();
                     }
                     Navigator.pop(context); // Close the New Task Screen
                   },
@@ -150,7 +168,7 @@ class _NotesListState extends State<NotesList> {
           }
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: pushAddTodoScreen,
+        onPressed: pushAddNotesScreen,
         tooltip: 'Add Note',
         child: Icon(Icons.add),
       ),
@@ -175,12 +193,27 @@ class NoteCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              aNoteItem.title,
-              style: TextStyle(
-                fontSize: 22.0,
-                color: Colors.blue,
-              ),
+            new Row(
+                children: <Widget>[
+                  new Expanded(child: new TextField(
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        color: Colors.blue,
+                      ),
+                      decoration:
+                      InputDecoration(
+                        contentPadding: const EdgeInsets.all(22),
+                        hintStyle: TextStyle(
+                          fontSize: 22.0,
+                          color: Colors.blue,
+                        ),
+                        hintText: 'Title',
+                      ),
+                      onSubmitted: (newtitle){
+                        aNoteItem.title = newtitle;
+                      }
+                  ))
+                ]
             ),
             Text(
               aNoteItem.note,
@@ -190,6 +223,7 @@ class NoteCard extends StatelessWidget {
               ),
             ),
             Text(aNoteItem.now, style: TextStyle(fontSize: 16)),
+            Text(aNoteItem.userName, style: TextStyle(fontSize: 16)),
             SizedBox(height: 6.0),
             FlatButton.icon(
                 onPressed: delete,
