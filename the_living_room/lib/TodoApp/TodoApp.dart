@@ -25,9 +25,9 @@ class _ToDoListState extends State<ToDoList> {
 
   //List<String> tdl = List<String>(); // TO DO LIST
   List<ToDoItem> tdl = [
-    ToDoItem(todo: 'go to store'),
-    ToDoItem(todo: 'say hello world'),
-    ToDoItem(todo: 'update list')
+    ToDoItem(todo: 'go to store', user: 'me'),
+    ToDoItem(todo: 'say hello world', user:'me'),
+    ToDoItem(todo: 'update list', user: 'me')
   ];
 
   @override
