@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Notes extends StatelessWidget {
   @override
@@ -52,19 +54,15 @@ class _NotesListState extends State<NotesList> {
     String formatted = formatter.format(time);
 
     String name = 'Test';
-    FirebaseAuth auth = FirebaseAuth.instance;
-    if (auth != null) { 
-      //final Future<FirebaseUser> user = auth.currentUser();
-      FirebaseUser user = await auth.currentUser();
-      if(user != null) {
-        name = user.displayName;
-      }
-      else {
-        name = "user is null";
-      }
+
+
+    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      name = currentUser.displayName;
     }
     else{
-      name = "auth is null";
+      name = "user is null";
     }
 
     setState(() {
@@ -122,11 +120,11 @@ class _NotesListState extends State<NotesList> {
                 body:
 
                 TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
+                  //keyboardType: TextInputType.multiline,
+                  //maxLines: null,
                   decoration:
                   InputDecoration(
-                      //contentPadding: const EdgeInsets.all(16),
+                      contentPadding: const EdgeInsets.all(16),
                       hintText: 'Enter a note',
                   ),
                   onSubmitted: (newnote){
