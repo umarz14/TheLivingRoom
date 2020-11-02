@@ -15,7 +15,7 @@ class _householdstate extends State<household> {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.blueGrey,
+        color: Colors.grey[800],
         child: Center(
 
           child: Text('Roommates'),
