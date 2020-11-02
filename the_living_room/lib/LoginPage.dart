@@ -41,18 +41,6 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
           );
-          // firestoreInstance.collection("users").add(
-          // {
-          // "name" : user.displayName,
-          // "age" : 50,
-          // "email" : user.email,
-          // "address" : {
-          // "street" : "street 24",
-          // "city" : "new york"
-          // }
-          // }).then((value){
-          // print(value.id);
-          // });
         });
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

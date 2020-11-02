@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
+final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<String> signInWithGoogle() async {
@@ -10,23 +10,24 @@ Future<String> signInWithGoogle() async {
   final GoogleSignInAuthentication googleSignInAuthentication =
   await googleSignInAccount.authentication;
 
-  final AuthCredential credential = GoogleAuthProvider.getCredential(
+  final auth.AuthCredential credential = auth.GoogleAuthProvider.credential(
     accessToken: googleSignInAuthentication.accessToken,
     idToken: googleSignInAuthentication.idToken,
   );
 
-  final AuthResult authResult = await _auth.signInWithCredential(credential);
-  final FirebaseUser user = authResult.user;
+  final auth.UserCredential authResult = await _auth.signInWithCredential(credential);
+  final auth.User user = authResult.user;
 
   assert(!user.isAnonymous);
   assert(await user.getIdToken() != null);
 
-  final FirebaseUser currentUser = await _auth.currentUser();
+  //final auth.User currentUser = await _auth.currentUser();
+  final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
   assert(user.uid == currentUser.uid);
-  final databaseReference = Firestore.instance;
+  final databaseReference = FirebaseFirestore.instance;
   await databaseReference.collection("users")
-      .document(user.uid)
-      .setData({
+      .doc(user.uid)
+      .set({
     'name': user.displayName,
     'email': user.email,
   });

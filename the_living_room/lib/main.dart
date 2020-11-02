@@ -4,9 +4,12 @@ import 'placeholder_widget.dart';
 import 'notes.dart';
 import 'LoginPage.dart';
 import 'household.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(); //creates firebase instance
   runApp(MyApp());
 }
 
@@ -84,18 +87,22 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
             title: new Text('Home'),
+            backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.list),
             title: new Text('Task'),
+            backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.note),
             title: new Text('Notes'),
+            backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.settings),
             title: new Text('Settings'),
+            backgroundColor: Colors.blueGrey,
           ),
         ],
       ),
