@@ -72,5 +72,3 @@ dependencies {
     implementation 'com.google.firebase:firebase-database' //for database access
     implementation 'com.google.firebase:firebase-firestore' //for making local groups
 }
-
-apply plugin: "com.google.gms.google-services"
