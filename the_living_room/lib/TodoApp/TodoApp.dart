@@ -40,7 +40,6 @@ class _ToDoListState extends State<ToDoList> {
   } // End of Dispose
 
   void addTodoItem(String tdi) {
-
     String nameOfCreator = 'me';
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
@@ -79,6 +78,8 @@ class _ToDoListState extends State<ToDoList> {
       );
     }));
   }
+
+
 
   @override
   Widget build(BuildContext context) {
