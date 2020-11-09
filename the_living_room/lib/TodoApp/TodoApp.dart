@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'to_do_card.dart';
 import 'todo.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class ToDoApp extends StatelessWidget {
   @override
@@ -25,9 +26,9 @@ class _ToDoListState extends State<ToDoList> {
 
   //List<String> tdl = List<String>(); // TO DO LIST
   List<ToDoItem> tdl = [
-    ToDoItem(todo: 'go to store'),
-    ToDoItem(todo: 'say hello world'),
-    ToDoItem(todo: 'update list')
+    ToDoItem(todo: 'go to store', user: 'me'),
+    ToDoItem(todo: 'say hello world', user:'me'),
+    ToDoItem(todo: 'update list', user: 'me')
   ];
 
   @override
@@ -39,8 +40,18 @@ class _ToDoListState extends State<ToDoList> {
   } // End of Dispose
 
   void addTodoItem(String tdi) {
+
+    String nameOfCreator = 'me';
+    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      nameOfCreator = currentUser.displayName;
+    } // Enf of if
+    else{
+      nameOfCreator = "user = null";
+    } // End of else
+
     setState(() {
-      tdl.add(ToDoItem(todo: tdi));
+      tdl.add(ToDoItem(todo: tdi, user: nameOfCreator));
     });
   } // End of addTodoItem
 
