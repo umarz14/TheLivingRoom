@@ -16,6 +16,12 @@ class Upload extends StatefulWidget {
 
 }
 
+class roomies extends StatefulWidget {
+  @override
+  _roomiesstate createState() => _roomiesstate();
+
+}
+
 class _householdstate extends State<household> {
   @override
   Widget build(BuildContext context) {
@@ -39,6 +45,16 @@ class _householdstate extends State<household> {
             },
             color: Colors.cyan,
           ),
+              RaisedButton( //menu for adding roommates to the household
+                child: Text('Household Members'),
+                onPressed: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => roomies()),
+                  );
+                },
+                color: Colors.cyan,
+              ),
          ],
         ),
       ),
@@ -128,6 +144,8 @@ class _Uploadstate extends State<Upload>{
     );
   }
 
+
+
   Future chooseFile() async {
     await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
       setState(() {
@@ -149,5 +167,29 @@ class _Uploadstate extends State<Upload>{
         _uploadedFileURL = fileURL;
       });
     });
+  }
+}
+
+class _roomiesstate extends State<roomies> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Add roommates"),
+        ),
+        body: Center(
+          child: Column(
+              children: <Widget>[
+            RaisedButton(
+              child: Text('Back'),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              color: Colors.cyan,
+            ),
+            ],
+          )
+        )
+    );
   }
 }
