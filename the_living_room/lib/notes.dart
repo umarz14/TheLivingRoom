@@ -33,7 +33,7 @@ class _NotesListState extends State<NotesList> {
   // Create a text controller. Later, use it to retrieve the
   // current value of the TextField.
   final myController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  //final _formKey = GlobalKey<FormState>();
 
   List<NotesModel> tdl = [
     NotesModel(title: '', note: 'example note', now: 'date, time', userName: 'user'),

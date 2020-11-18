@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:the_living_room/TodoApp/assign.dart';
 import 'todo.dart';
-
 class ToDoCard extends StatelessWidget {
 
   final ToDoItem toDoItem; // Because this is stateful widget data can not change so we put final
@@ -16,12 +16,29 @@ class ToDoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
-              toDoItem.todo,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
+            Row(
+              children: [
+                Text(
+                  toDoItem.todo,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(width: 10, height: 10,),
+                FlatButton(
+                  color: Colors.grey[500],
+                  child: Text('hello'),
+                  textColor: Colors.deepPurple,
+                  onPressed: (){
+                    Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AssignToRoomate())
+                    );
+                  },
+
+
+                )
+              ],
             ),
             SizedBox(height: 6.0),
             Text(
