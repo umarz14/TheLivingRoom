@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'to_do_card.dart';
-import 'todo.dart';
+import 'package:the_living_room/TodoApp/to_do_card.dart';
+import 'package:the_living_room/TodoApp/todo.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class ToDoApp extends StatelessWidget {
@@ -66,14 +66,23 @@ class _ToDoListState extends State<ToDoList> {
         appBar: AppBar(
           title: Text('New Task'),
         ),
-        body: TextField(
-          decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(16),
-              hintText: 'What do you have to do?'),
-          onSubmitted: (toDoTask) {
-            addTodoItem(toDoTask);
-            Navigator.pop(context); // Close the New Task Screen
-          },
+        body: Container(
+          //padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+          child: TextField(
+            decoration: InputDecoration(
+                contentPadding: const EdgeInsets.all(16),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey, width: 2)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey, width: 2)
+                ),
+                hintText: 'What do you have to do?'),
+            onSubmitted: (toDoTask) {
+              addTodoItem(toDoTask);
+              Navigator.pop(context); // Close the New Task Screen
+            },
+          ),
         ),
       );
     }));

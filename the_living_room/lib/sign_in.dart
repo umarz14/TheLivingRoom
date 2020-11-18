@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:the_living_room/database/databse.dart';
 
 final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,6 +32,10 @@ Future<String> signInWithGoogle() async {
     'name': user.displayName,
     'email': user.email,
   });
+
+  //create new collection for every member
+  print(user.uid);
+  await DatabaseService(uid:user.uid). updateUserData('test database', user.displayName, user.displayName);
 
   return 'signInWithGoogle succeeded: $user';
 }
