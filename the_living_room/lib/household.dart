@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // For Image Picker
 import 'package:path/path.dart' as Path;
@@ -171,8 +174,14 @@ class _Uploadstate extends State<Upload>{
 }
 
 class _roomiesstate extends State<roomies> {
+  final fb = FirebaseDatabase.instance;
+  final databaseReference = FirebaseFirestore.instance;
+  final User currentUser = FirebaseAuth.instance.currentUser;
+  final myController = TextEditingController();
+  final name = "Name";
   @override
   Widget build(BuildContext context) {
+    final ref = fb.reference();
     return Scaffold(
         appBar: AppBar(
           title: Text("Add roommates"),
@@ -180,6 +189,20 @@ class _roomiesstate extends State<roomies> {
         body: Center(
           child: Column(
               children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(name),
+                    Flexible(child: TextField(controller: myController)),
+                  ],
+                ),
+                RaisedButton(
+                  onPressed: () {
+                    //final householdID = databaseReference.collection("users").doc(currentUser.uid);
+                    //final userRef = databaseReference.collection("household").doc(householdID).get();
+                  },
+                  child: Text("Submit"),
+                ),
             RaisedButton(
               child: Text('Back'),
               onPressed: (){
@@ -192,4 +215,18 @@ class _roomiesstate extends State<roomies> {
         )
     );
   }
+}
+
+Future<String> addHouseholdMember(String username ) async {
+final databaseReference = FirebaseFirestore.instance;
+final User currentUser = FirebaseAuth.instance.currentUser;
+String houseID;
+DocumentSnapshot userDoc = await databaseReference.collection('users').doc(currentUser.uid).get();
+houseID = userDoc.data()['household']; //get household ID from user document
+if(houseID == null){
+  //val data = hashMapOf("member")
+  //databaseReference.collection('household').doc(currentUser.uid).set()
+}
+var member = {username:null};
+//final householdID = await databaseReference.collection("household").doc(houseID).set(member, SetOptions.merge());
 }
