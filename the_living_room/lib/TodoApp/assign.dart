@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:the_living_room/database/databse.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+class User {
+  final String email;
+  final String household;
+  final String name;
+
+  User({ this.email, this.household, this.name});
+}
 
 class UserList extends StatefulWidget {
   @override
@@ -12,11 +19,12 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
 
-    final users = Provider.of<QuerySnapshot>(context);
-    //print(users.docs);
-    for (var doc in users.docs){
-      print(doc.data());
-    }
+    final users = Provider.of<List<User>>(context);
+    users.forEach((user) {
+      print(user.name);
+      print(user.household);
+      print(user.email);
+    });
     return Container();
   }
 }
@@ -30,7 +38,7 @@ class AssignToRoomate extends StatefulWidget {
 class _AssignToRoomateState extends State<AssignToRoomate> {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
+    return StreamProvider<List<User>>.value(
       value: DatabaseService().users,
       child: Scaffold(
         appBar: AppBar(
