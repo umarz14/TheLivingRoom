@@ -34,10 +34,16 @@ Future<String> signInWithGoogle() async {
     'email': user.email,
     'household': null
   });
+    String input = user.email.replaceAll(".","_");
+    databaseReference.collection("emailToID")
+        .doc("source").update({
+      input: user.uid
+    });
           }
 
   return 'signInWithGoogle succeeded: $user';
 }
+
 
 void signOutGoogle() async{
   await googleSignIn.signOut();
