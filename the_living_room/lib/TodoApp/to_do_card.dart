@@ -28,8 +28,8 @@ class ToDoCard extends StatelessWidget {
                 SizedBox(width: 10, height: 10,),
                 FlatButton(
                   color: Colors.grey[500],
-                  child: Text('hello'),
-                  textColor: Colors.deepPurple,
+                  child: Text('Assign'),
+                  textColor: Colors.black,
                   onPressed: (){
                     Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AssignToRoomate())
