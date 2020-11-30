@@ -91,7 +91,7 @@ class _NotesListState extends State<NotesList> {
             ),
           ),
           actions: <Widget>[
-            TextButton(
+            FlatButton(
               child: Text('Ok'),
               onPressed: () {
                 Navigator.of(context).pop();
