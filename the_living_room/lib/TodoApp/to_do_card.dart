@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/assign.dart';
 import 'todo.dart';
-class ToDoCard extends StatelessWidget {
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+class ToDoCard extends StatefulWidget {
 
   final ToDoItem toDoItem; // Because this is stateful widget data can not change so we put final
   final Function delete;
-  ToDoCard( { this.toDoItem, this.delete } ); // Constructor should be the same as the class
+  ToDoCard( { this.toDoItem, this.delete } );
+  @override
+  _ToDoCardState createState() => _ToDoCardState();
+}
+
+class _ToDoCardState extends State<ToDoCard> {
+  final tasks = Provider.of<QuerySnapshot>(context);
+  print(task);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +28,7 @@ class ToDoCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  toDoItem.todo,
+                  widget.toDoItem.todo,
                   style: TextStyle(
                     fontSize: 18.0,
                     color: Colors.black,
@@ -42,10 +51,10 @@ class ToDoCard extends StatelessWidget {
             ),
             SizedBox(height: 6.0),
             Text(
-              toDoItem.user
+              widget.toDoItem.creator
             ),
             FlatButton.icon(
-                onPressed: delete,
+                onPressed: widget.delete,
                 icon: Icon(Icons.delete),
                 label: Text('delete')
             )

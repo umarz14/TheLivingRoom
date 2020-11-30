@@ -1,10 +1,11 @@
 class ToDoItem{
 
   String todo;
-  String user;
+  String creator;
+  String delegated;
 
   // Constructor
 
-  ToDoItem({ this.todo, this.user} ); // We used named parameters so we can pass stuff in any other
+  ToDoItem({ this.todo, this.creator, this.delegated} ); // We used named parameters so we can pass stuff in any other
 
 } // End of todoItem

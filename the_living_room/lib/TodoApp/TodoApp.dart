@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:the_living_room/TodoApp/to_do_card.dart';
 import 'package:the_living_room/TodoApp/todo.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:the_living_room/database/databse.dart';
 
 class ToDoApp extends StatelessWidget {
   @override
@@ -26,9 +29,9 @@ class _ToDoListState extends State<ToDoList> {
 
   //List<String> tdl = List<String>(); // TO DO LIST
   List<ToDoItem> tdl = [
-    ToDoItem(todo: 'go to store', user: 'me'),
-    ToDoItem(todo: 'say hello world', user:'me'),
-    ToDoItem(todo: 'update list', user: 'me')
+    ToDoItem(todo: 'go to store', creator: 'me'),
+    ToDoItem(todo: 'say hello world', creator:'me'),
+    ToDoItem(todo: 'update list', creator: 'me')
   ];
 
   @override
@@ -50,7 +53,7 @@ class _ToDoListState extends State<ToDoList> {
     } // End of else
 
     setState(() {
-      tdl.add(ToDoItem(todo: tdi, user: nameOfCreator));
+      tdl.add(ToDoItem(todo: tdi, creator: nameOfCreator));
     });
   } // End of addTodoItem
 
@@ -116,4 +119,26 @@ class _ToDoListState extends State<ToDoList> {
       ),
     );
   } // End of build
+}
+
+
+class TaskCloud extends StatefulWidget {
+  @override
+  _TaskCloudState createState() => _TaskCloudState();
+}
+
+class _TaskCloudState extends State<TaskCloud> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<QuerySnapshot>.value(
+      value: DatabaseService().tasks,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("TodoCloud"),
+          centerTitle: true,
+        ),
+      body: //TaskList(),
+      ),
+    );
+  }
 }

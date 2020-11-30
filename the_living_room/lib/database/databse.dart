@@ -2,16 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:the_living_room/TodoApp/assign.dart';
 
 class DatabaseService {
-
+  // gets the uid of the document
   final String uid;
   DatabaseService({this.uid});
 
   // collection reference
+  /*
+    Step 1: these functions create the collection in the database
+   */
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
   final CollectionReference taskCollection = FirebaseFirestore.instance.collection('tasks');
 
-  Future updateUserData(String task, String creator, String assigned) async {
-    return await taskCollection.doc(uid).set({
+  /*
+    Step 2:
+    Future because it is async
+    Gets referenced to document and update it
+    call function in sign_in.dart
+   */
+  Future updateTaskData(String task, String creator, String assigned) async {
+    return await taskCollection.doc(uid).set({ // access doc with specific uid
       'task': task,
       'creator': creator,
       'assigned': assigned
@@ -30,7 +39,7 @@ class DatabaseService {
   }
 
 
-  // Get task stream
+  // Step 3: Get task stream
   Stream<QuerySnapshot> get tasks{
     return taskCollection.snapshots();
   }
