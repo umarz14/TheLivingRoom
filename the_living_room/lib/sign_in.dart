@@ -25,15 +25,25 @@ Future<String> signInWithGoogle() async {
   final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
   assert(user.uid == currentUser.uid);
   final databaseReference = FirebaseFirestore.instance;
-  await databaseReference.collection("users")
-      .doc(user.uid)
-      .set({
+  final userRef = await databaseReference.collection("users")
+      .doc(user.uid).get();
+  if(!userRef.exists){
+    databaseReference.collection("users")
+        .doc(user.uid).set({
     'name': user.displayName,
     'email': user.email,
+    'household': null
   });
+    String input = user.email.replaceAll(".","_");
+    databaseReference.collection("emailToID")
+        .doc("source").update({
+      input: user.uid
+    });
+          }
 
   return 'signInWithGoogle succeeded: $user';
 }
+
 
 void signOutGoogle() async{
   await googleSignIn.signOut();
