@@ -5,11 +5,13 @@ class DatabaseService {
   // gets the uid of the document
   final String uid;
   DatabaseService({this.uid});
-
-  // collection reference
+  
   /*
     Step 1: these functions create the collection in the database
+    If collections doesn't exist it will be created
+    this allows us to read, change, and deleted documents from the collections
    */
+  // collection references
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
   final CollectionReference taskCollection = FirebaseFirestore.instance.collection('tasks');
 
@@ -21,9 +23,9 @@ class DatabaseService {
    */
   Future updateTaskData(String task, String creator, String assigned) async {
     return await taskCollection.doc(uid).set({ // access doc with specific uid
-      'task': task,
+      'todo': task,
       'creator': creator,
-      'assigned': assigned
+      'delegated': assigned
     });
   }
 

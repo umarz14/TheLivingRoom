@@ -13,8 +13,6 @@ class ToDoCard extends StatefulWidget {
 }
 
 class _ToDoCardState extends State<ToDoCard> {
-  final tasks = Provider.of<QuerySnapshot>(context);
-  print(task);
 
   @override
   Widget build(BuildContext context) {
@@ -64,3 +62,20 @@ class _ToDoCardState extends State<ToDoCard> {
     );
   }
 }
+
+class TaskList extends StatefulWidget {
+  @override
+  _TaskListState createState() => _TaskListState();
+}
+
+class _TaskListState extends State<TaskList> {
+  @override
+  Widget build(BuildContext context) {
+    final tasks = Provider.of<QuerySnapshot>(context);
+    print(tasks.docs);
+    return Container();
+  }
+}
+
+
+
