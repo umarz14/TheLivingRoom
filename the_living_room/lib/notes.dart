@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -28,38 +29,34 @@ class NotesList extends StatefulWidget {
 }
 
 class _NotesListState extends State<NotesList> {
-  // Variables
-  // Create a text controller. Later, use it to retrieve the
-  // current value of the TextField.
+
   final myController = TextEditingController();
 
   List<NotesModel> notesList = [
-    NotesModel(title: '', note: 'example note', now: 'date, time', userName: 'user'),
+    NotesModel(
+        title: '', note: 'example note', now: 'date, time', userName: 'user'),
   ];
 
-  /*@override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    myController.dispose();
-    super.dispose();
-  } // End of Dispose*/
+  String houseID;//Needs to be declared outside of getHouseHold or it won't work
 
   //get household ID from user
-  Future<String> getHouseHold() async
+  String getHouseHold()
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-    String houseID;
     String id = currentUser.uid;
+    print('user id {$id}');
 
-    DocumentSnapshot userDoc = await databaseReference.collection('users').doc(id).get();
-    houseID = userDoc.data()['household']; //get household ID from user document
+    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+      houseID = value.data()['household'];
+    });
+
+    print('house id in getHouseHold {$houseID}');
 
     return houseID;
   }
 
-  void addNoteItem(String entry) async{
+  void addNoteItem(String entry) async {
     String currentTitle = "Title";
     DateTime time = DateTime.now();
     String name = 'Test';
@@ -69,28 +66,33 @@ class _NotesListState extends State<NotesList> {
     if (currentUser != null) {
       name = currentUser.displayName;
     }
-    else{
+    else {
       name = "user is null";
     }
 
-    //String household = "RRpXs6hUf2e7nXlNp5I0Az0ci9r1";
-    String household = await getHouseHold();
+    String householdID = getHouseHold(); //works here
+    print('house id in addNoteItem {$householdID}');
+
     final firestoreInstance = FirebaseFirestore.instance;
-    firestoreInstance.collection("household").doc(household).collection("notes").add(
-      {
-        "Date": time,
-        "Note": entry,
-        "Title": currentTitle,
-        "User": name
-      }
+    firestoreInstance.collection("household").doc(householdID)
+        .collection("notes")
+        .add(
+        {
+          "Date": time,
+          "Note": entry,
+          "Title": currentTitle,
+          "User": name
+        }
     );
   } // End of addTodoItem
 
-  bool validate(String value){
+  bool validate(String value) {
     if (value.isEmpty) {
       return false;
     }
-    else {return true; }
+    else {
+      return true;
+    }
   }
 
   Future<void> _showMyDialog() async {
@@ -121,33 +123,30 @@ class _NotesListState extends State<NotesList> {
 
   // This function creates a new screen in top of our current screen where
   // one can add items
-  void pushAddNotesScreen(){
-
+  void pushAddNotesScreen() {
     //push page onto the stack; yes stack literally a a stack
     Navigator.of(context).push(
       // MaterialapageRoute automatically animates a screen entry
       // We will also use this page to a back button to close itself(does itself)
         MaterialPageRoute(
-            builder: (context){
+            builder: (context) {
               return Scaffold(
                 appBar: AppBar(
                   title: Text('New Note'),
                 ),
                 body:
                 TextField(
-                  //keyboardType: TextInputType.multiline,
-                  //maxLines: null,
                   decoration:
                   InputDecoration(
-                      contentPadding: const EdgeInsets.all(16),
-                      hintText: 'Enter a note',
+                    contentPadding: const EdgeInsets.all(16),
+                    hintText: 'Enter a note',
                   ),
-                  onSubmitted: (newnote){
+                  onSubmitted: (newnote) {
                     bool valid = validate(newnote);
-                    if (valid){
+                    if (valid) {
                       addNoteItem(newnote);
                     }
-                    else{
+                    else {
                       _showMyDialog();
                       pushAddNotesScreen();
                     }
@@ -161,13 +160,12 @@ class _NotesListState extends State<NotesList> {
   }
 
   //format the date and time correctly
-  String format(DocumentSnapshot document)
-  {
+  String format(DocumentSnapshot document) {
     DateTime time = (document['Date'].toDate());
     DateFormat formatter = DateFormat.yMd().add_jm();
     String formatted = formatter.format(time);
     return formatted;
-  }//format
+  } //format
 
   //implement a way to check if current user is document user
   /*void delete(){
@@ -179,7 +177,7 @@ class _NotesListState extends State<NotesList> {
         .catchError((error) => print("Failed to delete Note: $error"));
   }*/
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document){
+  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
     return Card(
       margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Padding(
@@ -188,11 +186,11 @@ class _NotesListState extends State<NotesList> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Text(
-                document['Title'],
-                style: TextStyle(
-                  fontSize: 22.0,
-                  color: Colors.blue,
-                ),
+              document['Title'],
+              style: TextStyle(
+                fontSize: 22.0,
+                color: Colors.blue,
+              ),
             ),
             Text(
               document['Note'],
@@ -216,36 +214,42 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    String householdID = getHouseHold().toString();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Notes'),
-        centerTitle: true,
-      ),
-      body: StreamBuilder(
-        stream: Firestore.instance.collection("household").doc(householdID).collection("notes").orderBy('Date', descending: true).snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Text('Loading...');
-          else return ListView.builder(
-              itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) =>
-                _buildListItem(context, snapshot.data.documents[index]),
-          );
-        }
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: pushAddNotesScreen,
-        tooltip: 'Add Note',
-        child: Icon(Icons.add),
-      ),
-    );
-  } // End of build
+    String householdID;
+    householdID = getHouseHold();//does not work here
+    print('house id in build {$householdID}');
+
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Notes'),
+          centerTitle: true,
+        ),
+        body: StreamBuilder(
+            stream: Firestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("notes").orderBy('Date', descending: true).snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return const Text('Loading...');
+              else
+                return ListView.builder(
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) =>
+                      _buildListItem(context, snapshot.data.documents[index]),
+                );
+            }
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: pushAddNotesScreen,
+          tooltip: 'Add Note',
+          child: Icon(Icons.add),
+        ),
+      );// End of build
+  }
 }
 
 //no longer using but keeping for reference until title input is done
-class NoteCard extends StatelessWidget {
+/*class NoteCard extends StatelessWidget {
 
   final NotesModel aNoteItem; // Because this is stateful widget data can not change so we put final
   final Function delete;
@@ -303,4 +307,4 @@ class NoteCard extends StatelessWidget {
       ),
     );
   }
-}
+}*/
