@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_living_room/database/databse.dart';
+import 'package:the_living_room/database/database.dart';
 import 'package:provider/provider.dart';
 
 class User {

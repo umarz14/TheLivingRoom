@@ -3,12 +3,13 @@ import 'package:the_living_room/TodoApp/assign.dart';
 
 class DatabaseService {
 
+
   final String uid;
   DatabaseService({this.uid});
 
   // collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
-  final CollectionReference taskCollection = FirebaseFirestore.instance.collection('tasks');
+  final CollectionReference taskCollection = FirebaseFirestore.instance.collection('household').doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1').collection('task');
 
   Future updateUserData(String task, String creator, String assigned) async {
     return await taskCollection.doc(uid).set({
@@ -17,6 +18,7 @@ class DatabaseService {
       'assigned': assigned
     });
   }
+
 
   // User list from snapshot
   List<User> _userListFromSnapshot(QuerySnapshot snapshot){
