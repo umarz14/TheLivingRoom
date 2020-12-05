@@ -1,12 +1,10 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-/*import 'package:the_living_room/TodoApp/to_do_card.dart';
-import 'package:the_living_room/TodoApp/todo.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:the_living_room/household.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';*/
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:the_living_room/database/database.dart';
+import 'package:provider/provider.dart';
+import 'package:the_living_room/household.dart';
 
 class ToDoApp extends StatelessWidget {
   @override
@@ -18,30 +16,52 @@ class ToDoApp extends StatelessWidget {
   }
 }
 
-void getHouse() {
-  final User currentUser = FirebaseAuth.instance.currentUser;
+void getHouseId() {
+  // This is the uid for their User Document
   final id = FirebaseAuth.instance.currentUser.uid;
-  print(id);
 
-  print('after this');
-  final firestoreInstance = FirebaseFirestore.instance
-    .collection('household')
+  FirebaseFirestore.instance
+    .collection('users')
     .doc(id)
-    .collection('tasks')
-    .add({
-      "creator": "james",
-      'delegated': 'apples',
-      'task': 'is it in the database'
-    }
-    );
-  //.doc('test')
-    /*.get()
+    .get()
       .then((DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.exists) {
       print('Document exists on the database');
+      Map<String, dynamic> data = documentSnapshot.data();
+      print("household: ${data['household']}");
     }
-  });*/
-  //return id;
+  });
+}
+
+class TaskList extends StatelessWidget {
+
+  final id = FirebaseAuth.instance.currentUser.uid;
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc(id).collection('tasks');
+    return StreamBuilder<QuerySnapshot>(
+      stream: tasks.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading");
+        }
+
+        return new ListView(
+          children: snapshot.data.docs.map((DocumentSnapshot document) {
+            return new ListTile(
+              title: new Text(document.data()['task']),
+              subtitle: new Text(document.data()['creator']),
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
 }
 
 class ToDoList extends StatefulWidget {
@@ -50,21 +70,24 @@ class ToDoList extends StatefulWidget {
 }
 
 class _ToDoListState extends State<ToDoList> {
-
+  final id = FirebaseAuth.instance.currentUser.uid;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Todo List'),
-        centerTitle: true,
-      ),
-      body: Text("yellow"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          getHouse();
-        },
-        tooltip: 'Add Task',
-        child: Icon(Icons.add),
+    return StreamProvider<QuerySnapshot>.value(
+      value: DatabaseService().users,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Todo List'),
+          centerTitle: true,
+        ),
+        body: TaskList(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            getHouseId();
+          },
+          tooltip: 'Add Task',
+          child: Icon(Icons.add),
+        ),
       ),
     );
   } // End of build
