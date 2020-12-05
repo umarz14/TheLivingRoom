@@ -6,6 +6,7 @@ import 'notes.dart';
 import 'LoginPage.dart';
 import 'household.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:the_living_room/splash.dart';
 
 
 void main() async {
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         //home:UserLogin(),
-        home: LoginPage()
+        home: Splash()
       //home: MyHomePage(title: 'TheLivingRoom'),
     );
   }
