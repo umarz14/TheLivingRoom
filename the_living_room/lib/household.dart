@@ -206,7 +206,7 @@ Future<String> addHouseholdMember(String username ) async {
 final databaseReference = FirebaseFirestore.instance;
 final User currentUser = FirebaseAuth.instance.currentUser;
 String houseID;
-String userID = await getUID(username);
+Future<String> UserID = getUID(username);
 final id = currentUser.uid; //get ID to set in map
 DocumentSnapshot userDoc = await databaseReference.collection('users').doc(id).get();
 houseID = userDoc.data()['household']; //get household ID from user document
@@ -225,10 +225,8 @@ DocumentSnapshot idMap = await databaseReference.collection("emailToID").doc("so
 newUserID = idMap.data()[username]; //grab user id
 */
 //future<String> name = asd;
-  DocumentSnapshot inviteeDoc = await databaseReference.collection('users').doc(userID).get();
-  String inviteeName = inviteeDoc.data()['name']; //get household ID from user document
-  databaseReference.collection('household').doc(houseID).collection("member").doc(await userID).set({
-    "name": inviteeName
+  databaseReference.collection('household').doc(houseID).collection("member").doc(await UserID).set({
+    "name": ""
   });
 //final householdID = await databaseReference.collection("household").doc(houseID).set(member, SetOptions.merge());
 }

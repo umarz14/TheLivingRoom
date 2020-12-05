@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/TodoApp.dart';
-import 'package:the_living_room/table_calendar.dart';
+import 'placeholder_widget.dart';
 import 'notes.dart';
 import 'LoginPage.dart';
 import 'household.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:the_living_room/splash.dart';
 
 
 void main() async {
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         //home:UserLogin(),
-        home: Splash()
+        home: LoginPage()
       //home: MyHomePage(title: 'TheLivingRoom'),
     );
   }
@@ -63,10 +62,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    HomeCalendar(),
+    PlaceholderWidget(Colors.white),
     ToDoApp(),
     Notes(),
-    Household(),
+    household()
   ];
 
   @override
@@ -87,22 +86,22 @@ class _MyHomePageState extends State<MyHomePage> {
         items: [
           BottomNavigationBarItem(
             icon: new Icon(Icons.home),
-            label: "Home",
+            title: new Text('Home'),
             backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.list),
-            label: 'Task',
+            title: new Text('Task'),
             backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.note),
-            label: 'Notes',
+            title: new Text('Notes'),
             backgroundColor: Colors.blueGrey,
           ),
           BottomNavigationBarItem(
             icon: new Icon(Icons.settings),
-            label: 'Settings',
+            title: new Text('Settings'),
             backgroundColor: Colors.blueGrey,
           ),
         ],
