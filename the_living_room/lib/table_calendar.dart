@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:validators/sanitizers.dart';
 
 
 class HomeCalendar extends StatefulWidget {
@@ -21,7 +19,7 @@ class _HomeCalState extends State<HomeCalendar> {
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-    String id = currentUser.uid;
+    //String id = currentUser.uid;
     //print('user id {$id}');
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
@@ -192,7 +190,7 @@ MeetingDataSource getCalendarDataSource() {
     eventName: 'Rent Due',
     isAllDay: true,
   ));
-  Firestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("events").get().then((querySnapshot) {
+  FirebaseFirestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("events").get().then((querySnapshot) {
     querySnapshot.docs.forEach((result) {
             appointments.add(Meeting(
               from: result.data()['from'].toDate(),

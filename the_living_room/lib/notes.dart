@@ -227,7 +227,7 @@ class _NotesListState extends State<NotesList> {
           centerTitle: true,
         ),
         body: StreamBuilder(
-            stream: Firestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("notes").orderBy('Date', descending: true).snapshots(),
+            stream: FirebaseFirestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("notes").orderBy('Date', descending: true).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return const Text('Loading...');

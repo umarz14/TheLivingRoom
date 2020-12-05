@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/TodoApp.dart';
 import 'package:the_living_room/table_calendar.dart';
 import 'notes.dart';
-import 'LoginPage.dart';
 import 'household.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:the_living_room/splash.dart';
