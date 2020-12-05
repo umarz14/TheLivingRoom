@@ -11,7 +11,7 @@ class DatabaseService {
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
   final CollectionReference taskCollection = FirebaseFirestore.instance.collection('household').doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1').collection('task');
 
-  Future updateUserData(String task, String creator, String assigned) async {
+  Future addTask(String task, String creator, String assigned) async {
     return await taskCollection.doc(uid).set({
       'task': task,
       'creator': creator,

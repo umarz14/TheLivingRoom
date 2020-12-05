@@ -42,10 +42,6 @@ Future<String> signInWithGoogle() async {
     });
           }
 
-  //create new collection for every member
-  print(user.uid);
-  await DatabaseService(uid:user.uid). updateUserData('test database', user.displayName, user.displayName);
-
   return 'signInWithGoogle succeeded: $user';
 }
 
