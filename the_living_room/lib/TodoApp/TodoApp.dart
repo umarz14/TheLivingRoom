@@ -2,9 +2,10 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:the_living_room/database/database.dart';
-import 'package:provider/provider.dart';
-import 'package:the_living_room/household.dart';
+import 'package:the_living_room/TodoApp/Cards.dart';
+import 'package:the_living_room/TodoApp/Classes.dart';
+import 'package:the_living_room/TodoApp/addTask.dart';
+
 
 class ToDoApp extends StatelessWidget {
   @override
@@ -16,7 +17,7 @@ class ToDoApp extends StatelessWidget {
   }
 }
 
-void getHouseId() {
+String getHouseId() {
   // This is the uid for their User Document
   final id = FirebaseAuth.instance.currentUser.uid;
 
@@ -29,8 +30,11 @@ void getHouseId() {
       print('Document exists on the database');
       Map<String, dynamic> data = documentSnapshot.data();
       print("household: ${data['household']}");
+      return data['household'];
     }
   });
+  print('Could not grab ID');
+  return 'Error';
 }
 
 class TaskList extends StatelessWidget {
@@ -53,9 +57,12 @@ class TaskList extends StatelessWidget {
 
         return new ListView(
           children: snapshot.data.docs.map((DocumentSnapshot document) {
-            return new ListTile(
-              title: new Text(document.data()['task']),
-              subtitle: new Text(document.data()['creator']),
+            return new ToDoCard(
+              toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated']),
+              delete: () {
+                tasks.doc(document.id)
+                    .delete();
+              },
             );
           }).toList(),
         );
@@ -64,6 +71,7 @@ class TaskList extends StatelessWidget {
   }
 }
 
+
 class ToDoList extends StatefulWidget {
   @override
   _ToDoListState createState() => _ToDoListState();
@@ -71,23 +79,23 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
   final id = FirebaseAuth.instance.currentUser.uid;
+  String hid = getHouseId();
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
-      value: DatabaseService().users,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Todo List'),
-          centerTitle: true,
-        ),
-        body: TaskList(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            getHouseId();
-          },
-          tooltip: 'Add Task',
-          child: Icon(Icons.add),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Todo List'),
+        centerTitle: true,
+      ),
+      body: TaskList(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => PushAddToDoScreen())
+          );
+        },
+        tooltip: 'Add Task',
+        child: Icon(Icons.add),
       ),
     );
   } // End of build

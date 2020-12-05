@@ -1,6 +1,8 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/assign.dart';
-import 'todo.dart';
+import 'Classes.dart';
+
+//ToDo Card
 class ToDoCard extends StatelessWidget {
 
   final ToDoItem toDoItem; // Because this is stateful widget data can not change so we put final
@@ -42,7 +44,7 @@ class ToDoCard extends StatelessWidget {
             ),
             SizedBox(height: 6.0),
             Text(
-              toDoItem.user
+              toDoItem.creator
             ),
             FlatButton.icon(
                 onPressed: delete,
@@ -55,4 +57,27 @@ class ToDoCard extends StatelessWidget {
     );
   }
 }
-*/
+
+//Member Card
+class MemberTile extends StatelessWidget {
+
+  final Member member;
+  MemberTile({this.member});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 8.0),
+      child: Card(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: ListTile(
+          leading: CircleAvatar( // put user profile pics here later
+            radius: 25,
+            backgroundColor: Colors.grey,
+          ),
+          title: Text(member.name),
+        ),
+      ),
+    );
+  }
+}

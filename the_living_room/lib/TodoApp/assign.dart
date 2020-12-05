@@ -1,62 +1,38 @@
-/*import 'package:flutter/material.dart';
-import 'package:the_living_room/database/database.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:the_living_room/TodoApp/Classes.dart';
+import 'package:the_living_room/TodoApp/Cards.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class User {
-  final String email;
-  final String household;
-  final String name;
+class MemberList extends StatelessWidget {
 
-  User({ this.email, this.household, this.name});
-}
-
-class UserTile extends StatelessWidget {
-
-  final User user;
-  UserTile({this.user});
+  final id = FirebaseAuth.instance.currentUser.uid;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8.0),
-      child: Card(
-        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: ListTile(
-          leading: CircleAvatar( // put user profile pics here later
-            radius: 25,
-            backgroundColor: Colors.grey,
-          ),
-          title: Text(user.name),
-        ),
-      ),
+    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc(id).collection('member');
+    return StreamBuilder<QuerySnapshot>(
+      stream: tasks.snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text("Loading");
+        }
+
+        return new ListView(
+          children: snapshot.data.docs.map((DocumentSnapshot document) {
+            return new MemberTile(
+              member: Member(name: document.data()['name']),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }
-
-
-class UserList extends StatefulWidget {
-  @override
-  _UserListState createState() => _UserListState();
-}
-
-class _UserListState extends State<UserList> {
-  @override
-  Widget build(BuildContext context) {
-
-    final users = Provider.of<List<User>>(context);
-    /*users.forEach((user) {
-      print(user.name);
-      print(user.household);
-      print(user.email);
-    });*/
-    return ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index){
-          return UserTile(user: users[index]);
-        },
-    );
-  } // End of build
-} // End of _UserListState
 
 
 class AssignToRoomate extends StatefulWidget {
@@ -67,16 +43,12 @@ class AssignToRoomate extends StatefulWidget {
 class _AssignToRoomateState extends State<AssignToRoomate> {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<User>>.value(
-      value: DatabaseService().users,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Assign To..."),
-          centerTitle: true,
-        ),
-        body: UserList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Assign To..."),
+        centerTitle: true,
       ),
+      body: MemberList(),
     );
   }
 }
-*/
