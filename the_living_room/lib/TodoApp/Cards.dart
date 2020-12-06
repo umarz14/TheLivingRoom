@@ -9,6 +9,7 @@ class ToDoCard extends StatelessWidget {
   final Function delete;
   ToDoCard( { this.toDoItem, this.delete } ); // Constructor should be the same as the class
 
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -30,11 +31,13 @@ class ToDoCard extends StatelessWidget {
                 SizedBox(width: 10, height: 10,),
                 FlatButton(
                   color: Colors.grey[500],
-                  child: Text('Assign'),
+                  child: Icon(Icons.assignment_ind),
                   textColor: Colors.black,
                   onPressed: (){
                     Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AssignToRoomate())
+                    MaterialPageRoute(builder: (context) => AssignToRoomate(
+                     //ata: data,
+                    )),
                     );
                   },
 
@@ -76,6 +79,10 @@ class MemberTile extends StatelessWidget {
             backgroundColor: Colors.grey,
           ),
           title: Text(member.name),
+          trailing: Icon(Icons.add),
+          onTap:(){
+            print('hey');
+          },
         ),
       ),
     );

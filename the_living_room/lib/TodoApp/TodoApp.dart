@@ -16,31 +16,72 @@ class ToDoApp extends StatelessWidget {
     );
   }
 }
+/*
+Future<User> _fetchUserInfo(String id) async {
+  User fetchedUser;
+  var snapshot = await FirebaseFirestore.instance
+      .collection('user')
+      .doc(id)
+      .get();
+  return User(snapshot);
+}
+*/
 
-String getHouseId() {
-  // This is the uid for their User Document
+/*
+foo() async {
   final id = FirebaseAuth.instance.currentUser.uid;
+  final user = await getdata1(id);
+  return await getdata1(id);
 
-  FirebaseFirestore.instance
-    .collection('users')
-    .doc(id)
-    .get()
+}
+
+getdata1(String id) async{
+  // This is the uid for their User Document
+  String hid = '';
+  final id = FirebaseAuth.instance.currentUser.uid;
+  print(id);
+
+  await FirebaseFirestore.instance
+      .collection('users')
+      .doc(id)
+      .get()
       .then((DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.exists) {
-      print('Document exists on the database');
+      //print('Document exists on the database');
       Map<String, dynamic> data = documentSnapshot.data();
-      print("household: ${data['household']}");
-      return data['household'];
+      //print("{$data['household']}");
+      return (data["household"].toString());
+      print("hid = $hid");
+    }});
+  return hid;
+}
+
+*/
+
+/*
+final String _collection = 'users';
+final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+
+getData() async {
+  return await _fireStore.collection(_collection).doc('h5e1Q7DKMfPwpccjfYuxSgfOF0W2').get();
+}
+getDat() {
+  getData().then((val) {
+    if (val.documents.length > 0) {
+      print(val.documents[0].data["household"]);
+    }
+    else {
+      print("Not Found");
     }
   });
-  print('Could not grab ID');
-  return 'Error';
 }
+
+ */
 
 class TaskList extends StatelessWidget {
 
   final id = FirebaseAuth.instance.currentUser.uid;
-
+  //final hid  = foo();
   @override
   Widget build(BuildContext context) {
     CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc(id).collection('tasks');
@@ -58,7 +99,7 @@ class TaskList extends StatelessWidget {
         return new ListView(
           children: snapshot.data.docs.map((DocumentSnapshot document) {
             return new ToDoCard(
-              toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated']),
+              toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated'], id:document.id),
               delete: () {
                 tasks.doc(document.id)
                     .delete();
@@ -79,7 +120,7 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
   final id = FirebaseAuth.instance.currentUser.uid;
-  String hid = getHouseId();
+  //String hid = foo();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,11 +130,20 @@ class _ToDoListState extends State<ToDoList> {
       ),
       body: TaskList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
+
+
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => PushAddToDoScreen())
           );
         },
+
+          //String hello = "apple";
+          //print('household $hello');
+          //hello = getHouseId();
+          //print('household $hello');
+          //String y = getdata1();
+          //print("pritint outisde the function $y");
         tooltip: 'Add Task',
         child: Icon(Icons.add),
       ),

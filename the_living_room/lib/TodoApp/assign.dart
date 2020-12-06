@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class MemberList extends StatelessWidget {
 
+
   final id = FirebaseAuth.instance.currentUser.uid;
 
   @override
@@ -36,6 +37,9 @@ class MemberList extends StatelessWidget {
 
 
 class AssignToRoomate extends StatefulWidget {
+  final ToDoItem data;
+  AssignToRoomate({this.data});
+
   @override
   _AssignToRoomateState createState() => _AssignToRoomateState();
 }
