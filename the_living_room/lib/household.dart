@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
-class household extends StatefulWidget {
+class Household extends StatefulWidget {
   @override
-  _householdstate createState() => _householdstate();
+  _HouseholdState createState() => _HouseholdState();
 }
 
 class Upload extends StatefulWidget {
@@ -18,12 +18,12 @@ class Upload extends StatefulWidget {
   _Uploadstate createState() => _Uploadstate();
 }
 
-class roomies extends StatefulWidget {
+class Roomies extends StatefulWidget {
   @override
-  _roomiesstate createState() => _roomiesstate();
+  _RoomiesState createState() => _RoomiesState();
 }
 
-class _householdstate extends State<household> {
+class _HouseholdState extends State<Household> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +51,7 @@ class _householdstate extends State<household> {
                 onPressed: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => roomies()),
+                    MaterialPageRoute(builder: (context) => Roomies()),
                   );
                 },
                 color: Colors.cyan,
@@ -158,7 +158,7 @@ class _Uploadstate extends State<Upload> {
   }
 }
 
-class _roomiesstate extends State<roomies> {
+class _RoomiesState extends State<Roomies> {
   final fb = FirebaseDatabase.instance;
   final databaseReference = FirebaseFirestore.instance;
   final User currentUser = FirebaseAuth.instance.currentUser;
