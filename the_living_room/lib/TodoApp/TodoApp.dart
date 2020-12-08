@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -56,46 +55,38 @@ class ToDoList extends StatefulWidget {
 }
 
 class _ToDoListState extends State<ToDoList> {
-/*
-  String houseID;
-  bool loading = true;
 
-  String getHid()
-  {
+  void getData() async{
+    /*
+   String username = await Future.delayed(Duration(seconds: 3), (){
+      return 'yoshi';
+    });
+   print('$username');
+     */
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
 
     String uid = currentUser.uid;
     //print('user id {$uid}');
 
-    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
-      houseID = value.data()['household'];
-      setState((){ loading = false; });
+    String houseid = await databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+      return value.data()['household'];
     });
-    if(houseID != null)
-      loading = false;
-    //print('house id in getHouseHold {$houseID}');
-    return houseID;
+
+    print('house id in getHouseHold {$houseid}');
+
   }
 
-  void addNoteItem(String entry) {
 
-    //String householdID = await getHid(); //works here
-    //print('house id in addNoteItem {$householdID}');
-    //return Future.delayed(Duration(milliseconds: 500));
-    getHid().then(value);
-  }
-*/
-
-  void getData() {
-    Future.delayed(Duration(seconds: 3), (){
-      print('yoshi');
-    });
+  @override
+  void initState(){
+  super.initState();
+  getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    //String householdID;
+    //String householdID = getdata();
     //addNoteItem(householdID);//does not work here
      // if(loading) return CircularProgressIndicator();
     //print('house id in build {$householdID}');
