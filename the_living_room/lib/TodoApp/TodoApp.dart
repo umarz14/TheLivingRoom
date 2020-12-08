@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -46,7 +47,7 @@ class TaskList extends StatelessWidget {
       },
     );
   }
-}
+}// End of Task List
 
 
 class ToDoList extends StatefulWidget {
@@ -55,6 +56,7 @@ class ToDoList extends StatefulWidget {
 }
 
 class _ToDoListState extends State<ToDoList> {
+/*
   String houseID;
   bool loading = true;
 
@@ -64,30 +66,40 @@ class _ToDoListState extends State<ToDoList> {
     final databaseReference = FirebaseFirestore.instance;
 
     String uid = currentUser.uid;
-    print('user id {$uid}');
+    //print('user id {$uid}');
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
       setState((){ loading = false; });
     });
-    print('house id in getHouseHold {$houseID}');
+    if(houseID != null)
+      loading = false;
+    //print('house id in getHouseHold {$houseID}');
     return houseID;
   }
 
-  void addNoteItem(String entry) async {
+  void addNoteItem(String entry) {
 
-    String householdID = getHid(); //works here
-    print('house id in addNoteItem {$householdID}');
+    //String householdID = await getHid(); //works here
+    //print('house id in addNoteItem {$householdID}');
     //return Future.delayed(Duration(milliseconds: 500));
+    getHid().then(value);
+  }
+*/
+
+  void getData() {
+    Future.delayed(Duration(seconds: 3), (){
+      print('yoshi');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    String householdID;
-    //householdID = getHid();//does not work here
-    if(loading) return CircularProgressIndicator();
-    print('house id in build {$householdID}');
-    loading = false;
+    //String householdID;
+    //addNoteItem(householdID);//does not work here
+     // if(loading) return CircularProgressIndicator();
+    //print('house id in build {$householdID}');
+    //loading = false;
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo List'),
