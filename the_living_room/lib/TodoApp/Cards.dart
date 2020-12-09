@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:the_living_room/TodoApp/assign.dart';
+import 'package:the_living_room/TodoApp/Classes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Classes.dart';
+
+/*
+class InheritedTodo extends InheritedWidget {
+  final ToDoItem todo;
+
+  InheritedTodo({this.todo, Widget child}) :super(child: child);
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+
+}
+
+ */
 
 //ToDo Card
 class ToDoCard extends StatelessWidget {
@@ -29,20 +43,21 @@ class ToDoCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10, height: 10,),
-                FlatButton(
-                  color: Colors.grey[500],
-                  child: Icon(Icons.assignment_ind),
-                  textColor: Colors.black,
-                  onPressed: (){
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AssignToRoomate(
-                        //ata: data,
-                      )),
-                    );
-                  },
-
-
-                )
+                ButtonTheme(
+                  minWidth: 20,
+                  child: FlatButton(
+                    color: Colors.grey[500],
+                    child: Icon(Icons.assignment_ind),
+                    textColor: Colors.black,
+                    onPressed: (){
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AssignToRoomate(todo: toDoItem)),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 10, height: 10,),
+                Text(toDoItem.delegated)
               ],
             ),
             SizedBox(height: 6.0),
@@ -81,7 +96,16 @@ class MemberTile extends StatelessWidget {
           title: Text(member.name),
           trailing: Icon(Icons.add),
           onTap:(){
-            print('hey');
+            final lol = member.taskId;
+            print('$lol');
+            FirebaseFirestore.instance
+                .collection('household')
+                .doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1')
+                .collection('tasks')
+                .doc(lol)
+                .update({'delegated': member.name})
+                .then((value) => print("User Updated"))
+                .catchError((error) => print("Failed to update user: $error"));
           },
         ),
       ),
