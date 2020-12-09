@@ -1,5 +1,4 @@
 import 'dart:core';
-//import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -59,15 +58,12 @@ class _ToDoListState extends State<ToDoList> {
 /*
   String houseID;
   bool loading = true;
-
   String getHid()
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-
     String uid = currentUser.uid;
     //print('user id {$uid}');
-
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
       setState((){ loading = false; });
@@ -77,9 +73,7 @@ class _ToDoListState extends State<ToDoList> {
     //print('house id in getHouseHold {$houseID}');
     return houseID;
   }
-
   void addNoteItem(String entry) {
-
     //String householdID = await getHid(); //works here
     //print('house id in addNoteItem {$householdID}');
     //return Future.delayed(Duration(milliseconds: 500));
@@ -97,7 +91,7 @@ class _ToDoListState extends State<ToDoList> {
   Widget build(BuildContext context) {
     //String householdID;
     //addNoteItem(householdID);//does not work here
-     // if(loading) return CircularProgressIndicator();
+    // if(loading) return CircularProgressIndicator();
     //print('house id in build {$householdID}');
     //loading = false;
     return Scaffold(
