@@ -21,8 +21,8 @@ class Users {
 class Member {
 
   String name;
-
-  Member({this.name});
+  String taskId;
+  Member({this.name, this.taskId});
 }
 
 class Data {
