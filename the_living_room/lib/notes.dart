@@ -14,14 +14,14 @@ class Notes extends StatelessWidget {
   }
 }
 
-class NotesModel {
+/*class NotesModel {
   String title;
   String note;
   String now;
   String userName;
 
   NotesModel({this.title, this.note, this.now, this.userName});
-}
+}*/
 
 class NotesList extends StatefulWidget {
   @override
@@ -31,39 +31,36 @@ class NotesList extends StatefulWidget {
 class _NotesListState extends State<NotesList> {
 
   final myController = TextEditingController();
-
-  List<NotesModel> notesList = [
-    NotesModel(
-        title: '', note: 'example note', now: 'date, time', userName: 'user'),
-  ];
-
-  String houseID;//Needs to be declared outside of getHouseHold or it won't work
+  String houseID;
   bool loading = true;
+
   //get household ID from user
   String getHouseHold()
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
     String id = currentUser.uid;
-    print('user id {$id}');
+    //print('user id {$id}');
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
       setState((){ loading = false; });
     });
 
-    print('house id in getHouseHold {$houseID}');
+    //print('house id in getHouseHold {$houseID}');
 
     return houseID;
   }
 
-  void addNoteItem(String entry) async {
-    String currentTitle = "Title";
+  void addNoteItem(String inputTitle, inputNote) async {
     DateTime time = DateTime.now();
-    String name = 'Test';
-
+    String name = '';
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
+    final firestoreInstance = FirebaseFirestore.instance;
+    String householdID = getHouseHold();
+    print('house id in addNoteItem {$householdID}');
 
+    //get display name
     if (currentUser != null) {
       name = currentUser.displayName;
     }
@@ -71,30 +68,18 @@ class _NotesListState extends State<NotesList> {
       name = "user is null";
     }
 
-    String householdID = getHouseHold(); //works here
-    print('house id in addNoteItem {$householdID}');
-
-    final firestoreInstance = FirebaseFirestore.instance;
+    //store note in database
     firestoreInstance.collection("household").doc(householdID)
         .collection("notes")
         .add(
         {
           "Date": time,
-          "Note": entry,
-          "Title": currentTitle,
+          "Note": inputNote,
+          "Title": inputTitle,
           "User": name
         }
     );
   } // End of addTodoItem
-
-  bool validate(String value) {
-    if (value.isEmpty) {
-      return false;
-    }
-    else {
-      return true;
-    }
-  }
 
   Future<void> _showMyDialog() async {
     return showDialog<void>(
@@ -125,7 +110,9 @@ class _NotesListState extends State<NotesList> {
   // This function creates a new screen in top of our current screen where
   // one can add items
   void pushAddNotesScreen() {
-    //push page onto the stack; yes stack literally a a stack
+    String _title;
+    String _note;
+
     Navigator.of(context).push(
       // MaterialapageRoute automatically animates a screen entry
       // We will also use this page to a back button to close itself(does itself)
@@ -135,24 +122,48 @@ class _NotesListState extends State<NotesList> {
                 appBar: AppBar(
                   title: Text('New Note'),
                 ),
-                body:
-                TextField(
-                  decoration:
-                  InputDecoration(
-                    contentPadding: const EdgeInsets.all(16),
-                    hintText: 'Enter a note',
+                body: new Container(
+                  child: new Column (
+                      children: <Widget>[
+                        TextField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                            hintText: 'Enter a note title',
+                          ),
+                          onSubmitted: (value) {
+                            setState(() {
+                              _title = value;
+                            });
+                          },
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                            hintText: 'Enter a note body',
+                          ),
+                          onSubmitted: (value) {
+                            setState(() {
+                              _note = value;
+                            });
+                          },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if(_title != null && _note != null){
+                                addNoteItem(_title, _note);
+                                Navigator.pop(context);
+                              }
+                              else{
+                                _showMyDialog();
+                              }
+                            },
+                            child: Text('Submit'),
+                          ),
+                        ),
+                    ]
                   ),
-                  onSubmitted: (newnote) {
-                    bool valid = validate(newnote);
-                    if (valid) {
-                      addNoteItem(newnote);
-                    }
-                    else {
-                      _showMyDialog();
-                      pushAddNotesScreen();
-                    }
-                    Navigator.pop(context); // Close the New Task Screen
-                  },
                 ),
               );
             }
@@ -220,7 +231,6 @@ class _NotesListState extends State<NotesList> {
     String householdID;
     householdID = getHouseHold();//does not work here
     if(loading) return CircularProgressIndicator();
-    print('house id in build {$householdID}');
 
       return Scaffold(
         appBar: AppBar(
@@ -248,64 +258,3 @@ class _NotesListState extends State<NotesList> {
       );// End of build
   }
 }
-
-//no longer using but keeping for reference until title input is done
-/*class NoteCard extends StatelessWidget {
-
-  final NotesModel aNoteItem; // Because this is stateful widget data can not change so we put final
-  final Function delete;
-
-  NoteCard( { this.aNoteItem, this.delete} ); // Constructor should be the same as the class
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            new Row(
-                children: <Widget>[
-                  new Expanded(child: new TextField(
-                      style: TextStyle(
-                        fontSize: 22.0,
-                        color: Colors.blue,
-                      ),
-                      decoration:
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(22),
-                        hintStyle: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.blue,
-                        ),
-                        hintText: 'Title',
-                      ),
-                      onSubmitted: (newtitle){
-                        aNoteItem.title = newtitle;
-                      }
-                  ))
-                ]
-            ),
-            Text(
-              aNoteItem.note,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
-            ),
-            Text(aNoteItem.now, style: TextStyle(fontSize: 16)),
-            Text(aNoteItem.userName, style: TextStyle(fontSize: 16)),
-            SizedBox(height: 6.0),
-            FlatButton.icon(
-                onPressed: delete,
-                icon: Icon(Icons.delete),
-                label: Text('delete')
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}*/
