@@ -56,41 +56,34 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
 
-  void getData() async{
-    /*
-   String username = await Future.delayed(Duration(seconds: 3), (){
-      return 'yoshi';
-    });
-   print('$username');
-     */
+  Future<String> getData() async{
+
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
 
-    String uid = currentUser.uid;
-    //print('user id {$uid}');
-
-    String houseid = await databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+    String houseId = await databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       return value.data()['household'];
     });
-
-    print('house id in getHouseHold {$houseid}');
+    print('$houseId');
+    return houseId;
 
   }
-
-
+/*
   @override
   void initState(){
   super.initState();
   getData();
   }
 
+ */
+
   @override
   Widget build(BuildContext context) {
-    //String householdID = getdata();
-    //addNoteItem(householdID);//does not work here
-     // if(loading) return CircularProgressIndicator();
-    //print('house id in build {$householdID}');
-    //loading = false;
+    print("apples");
+    print(getData());
+    var householdID = getData();
+    print('house id = $householdID');
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo List'),
