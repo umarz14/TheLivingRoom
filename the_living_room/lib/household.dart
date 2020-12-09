@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
-class household extends StatefulWidget {
+class Household extends StatefulWidget {
   @override
   _householdstate createState() => _householdstate();
 }
@@ -23,7 +23,7 @@ class roomies extends StatefulWidget {
   _roomiesstate createState() => _roomiesstate();
 }
 
-class _householdstate extends State<household> {
+class _householdstate extends State<Household> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

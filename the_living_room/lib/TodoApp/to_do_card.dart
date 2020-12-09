@@ -25,7 +25,7 @@ class ToDoCard extends StatelessWidget {
             ),
             SizedBox(height: 6.0),
             Text(
-              toDoItem.user
+                toDoItem.user
             ),
             FlatButton.icon(
                 onPressed: delete,
