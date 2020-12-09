@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'noteCard.dart';
+import 'noteClasses.dart';
+
 
 class Notes extends StatelessWidget {
   @override
@@ -14,15 +17,6 @@ class Notes extends StatelessWidget {
   }
 }
 
-/*class NotesModel {
-  String title;
-  String note;
-  String now;
-  String userName;
-
-  NotesModel({this.title, this.note, this.now, this.userName});
-}*/
-
 class NotesList extends StatefulWidget {
   @override
   _NotesListState createState() => _NotesListState();
@@ -30,7 +24,7 @@ class NotesList extends StatefulWidget {
 
 class _NotesListState extends State<NotesList> {
 
-  final myController = TextEditingController();
+  //final myController = TextEditingController();
   String houseID;
   bool loading = true;
 
@@ -40,14 +34,11 @@ class _NotesListState extends State<NotesList> {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
     String id = currentUser.uid;
-    //print('user id {$id}');
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
       setState((){ loading = false; });
     });
-
-    //print('house id in getHouseHold {$houseID}');
 
     return houseID;
   }
@@ -114,8 +105,6 @@ class _NotesListState extends State<NotesList> {
     String _note;
 
     Navigator.of(context).push(
-      // MaterialapageRoute automatically animates a screen entry
-      // We will also use this page to a back button to close itself(does itself)
         MaterialPageRoute(
             builder: (context) {
               return Scaffold(
@@ -171,60 +160,12 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
-  //format the date and time correctly
-  String format(DocumentSnapshot document) {
-    DateTime time = (document['Date'].toDate());
+  String format(Timestamp input) {
+    DateTime time = input.toDate();
     DateFormat formatter = DateFormat.yMd().add_jm();
     String formatted = formatter.format(time);
     return formatted;
   } //format
-
-  //implement a way to check if current user is document user
-  /*void delete(){
-    CollectionReference household = FirebaseFirestore.instance.collection('household');
-    household
-        .doc(document.id)
-        .delete()
-        .then((value) => print("Note Deleted"))
-        .catchError((error) => print("Failed to delete Note: $error"));
-  }*/
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(
-              document['Title'],
-              style: TextStyle(
-                fontSize: 22.0,
-                color: Colors.blue,
-              ),
-            ),
-            Text(
-              document['Note'],
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
-            ),
-            Text(format(document), style: TextStyle(fontSize: 16)),
-            Text(document['User'], style: TextStyle(fontSize: 16)),
-            SizedBox(height: 6.0),
-            //need to implement delete button
-            /*FlatButton.icon(
-                onPressed: delete,
-                icon: Icon(Icons.delete),
-                label: Text('delete')
-            )*/
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -242,11 +183,17 @@ class _NotesListState extends State<NotesList> {
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return const Text('Loading...');
-              else
-                return ListView.builder(
-                  itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index) =>
-                      _buildListItem(context, snapshot.data.documents[index]),
+
+                return ListView(
+                  children: snapshot.data.documents.map<Widget>((document) {
+                        return new NoteCard(
+                          note: NotesModel(title:document.data()['Title'], note: document.data()['Note'], now:format(document.data()['Date']), userName:document.data()['User'], id:document.id),
+                          delete: () {
+                            Firestore.instance.collection("household").doc(householdID).collection("notes").doc(document.id)
+                                .delete();
+                          },
+                        );
+                      }).toList()
                 );
             }
         ),
@@ -258,3 +205,5 @@ class _NotesListState extends State<NotesList> {
       );// End of build
   }
 }
+
+
