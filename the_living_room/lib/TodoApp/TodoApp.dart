@@ -23,7 +23,8 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  String houseID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;//Needs to be declared outside of getHouseHold or it won't work
+  //Needs to be declared outside of getHouseHold or it won't work
+  String houseID;
   bool loading = true;
 
 
@@ -46,10 +47,11 @@ class _TaskListState extends State<TaskList> {
   @override
 
   Widget build(BuildContext context) {
-    String householdID;
-    householdID = getHouseHold();//does not work here
-    if(loading) return CircularProgressIndicator();
-    print('house id in build {$householdID}');
+    String householdID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;
+    //String householdID;
+    //householdID = getHouseHold();//does not work here
+    //if(loading) return CircularProgressIndicator();
+    //print('house id in build {$householdID}');
     return StreamBuilder(
       stream:FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').snapshots(),
       builder: (context, snapshot) {
@@ -57,7 +59,7 @@ class _TaskListState extends State<TaskList> {
           return Text('Something went wrong');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return Text("Loading");
         }
 
