@@ -26,38 +26,33 @@ class _TaskListState extends State<TaskList> {
   String houseID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;//Needs to be declared outside of getHouseHold or it won't work
   bool loading = true;
 
-  @override
+
   String getHouseHold()
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-    String id = currentUser.uid;
     //print('user id {$id}');
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
-      String houseID = value.data()['household'];
+      houseID = value.data()['household'];
       setState((){ loading = false; });
     });
 
-   // print('house id in getHouseHold {$houseID}');
+    // print('house id in getHouseHold {$houseID}');
 
     return houseID;
   }
+
   @override
-  void initState(){
-    super.initState();
-    print('here?');
-    print(getHouseHold());
-  }
 
   Widget build(BuildContext context) {
-    //String lol = getHouseHold();
-    String lol = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1';
-    print("lol is $lol");
-    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc(lol).collection('tasks');
-    return StreamBuilder<QuerySnapshot>(
-      stream: tasks.snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    String householdID;
+    householdID = getHouseHold();//does not work here
+    if(loading) return CircularProgressIndicator();
+    print('house id in build {$householdID}');
+    return StreamBuilder(
+      stream:FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').snapshots(),
+      builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
         }
@@ -67,11 +62,11 @@ class _TaskListState extends State<TaskList> {
         }
 
         return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
+          children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
             return new ToDoCard(
               toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated'], id:document.id),
               delete: () {
-                tasks.doc(document.id)
+                FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').doc(document.id)
                     .delete();
               },
             );
@@ -90,9 +85,8 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
 
-
-
   @override
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
