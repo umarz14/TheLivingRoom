@@ -16,11 +16,45 @@ class ToDoApp extends StatelessWidget {
   }
 }
 
-class TaskList extends StatelessWidget {
+class TaskList extends StatefulWidget {
+
   @override
+  _TaskListState createState() => _TaskListState();
+}
+
+class _TaskListState extends State<TaskList> {
+  String houseID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;//Needs to be declared outside of getHouseHold or it won't work
+  bool loading = true;
+
+  @override
+  String getHouseHold()
+  {
+    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
+    final databaseReference = FirebaseFirestore.instance;
+    String id = currentUser.uid;
+    //print('user id {$id}');
+
+    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+      String houseID = value.data()['household'];
+      setState((){ loading = false; });
+    });
+
+   // print('house id in getHouseHold {$houseID}');
+
+    return houseID;
+  }
+  @override
+  void initState(){
+    super.initState();
+    print('here?');
+    print(getHouseHold());
+  }
 
   Widget build(BuildContext context) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1').collection('tasks');
+    //String lol = getHouseHold();
+    String lol = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1';
+    print("lol is $lol");
+    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc(lol).collection('tasks');
     return StreamBuilder<QuerySnapshot>(
       stream: tasks.snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -56,34 +90,10 @@ class ToDoList extends StatefulWidget {
 
 class _ToDoListState extends State<ToDoList> {
 
-  Future<String> getData() async{
 
-    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
-    final databaseReference = FirebaseFirestore.instance;
-
-    String houseId = await databaseReference.collection("users").doc(currentUser.uid).get().then((value){
-      return value.data()['household'];
-    });
-    print('$houseId');
-    return houseId;
-
-  }
-/*
-  @override
-  void initState(){
-  super.initState();
-  getData();
-  }
-
- */
 
   @override
   Widget build(BuildContext context) {
-    print("apples");
-    print(getData());
-    var householdID = getData();
-    print('house id = $householdID');
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo List'),
