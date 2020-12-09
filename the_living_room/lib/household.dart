@@ -213,10 +213,6 @@ if(houseID == null){
   databaseReference.collection('household').doc(houseID).collection("member").doc(id).set({
     "name": currentUser.displayName
   });
-  databaseReference.collection("users")
-      .doc(id).update({
-    'household': id
-  });
 }
 /*
 DocumentSnapshot idMap = await databaseReference.collection("emailToID").doc("source").get(); //get document which contains map of emails to uids
@@ -227,6 +223,10 @@ newUserID = idMap.data()[username]; //grab user id
   String inviteeName = inviteeDoc.data()['name']; //get household ID from user document
   databaseReference.collection('household').doc(houseID).collection("member").doc(userID).set({
     "name": inviteeName
+  });
+  databaseReference.collection("users")
+      .doc(userID).update({
+    'household': id
   });
 //final householdID = await databaseReference.collection("household").doc(houseID).set(member, SetOptions.merge());
 }
