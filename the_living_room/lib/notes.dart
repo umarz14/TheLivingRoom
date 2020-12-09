@@ -38,7 +38,7 @@ class _NotesListState extends State<NotesList> {
   ];
 
   String houseID;//Needs to be declared outside of getHouseHold or it won't work
-
+  bool loading = true;
   //get household ID from user
   String getHouseHold()
   {
@@ -49,6 +49,7 @@ class _NotesListState extends State<NotesList> {
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
+      setState((){ loading = false; });
     });
 
     print('house id in getHouseHold {$houseID}');
@@ -214,11 +215,11 @@ class _NotesListState extends State<NotesList> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     String householdID;
     householdID = getHouseHold();//does not work here
+    if(loading) return CircularProgressIndicator();
     print('house id in build {$householdID}');
 
       return Scaffold(
@@ -227,7 +228,7 @@ class _NotesListState extends State<NotesList> {
           centerTitle: true,
         ),
         body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("notes").orderBy('Date', descending: true).snapshots(),
+            stream: Firestore.instance.collection("household").doc(householdID).collection("notes").orderBy('Date', descending: true).snapshots(),
             builder: (context, snapshot) {
               if (!snapshot.hasData)
                 return const Text('Loading...');
