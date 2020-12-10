@@ -29,18 +29,18 @@ class _NotesListState extends State<NotesList> {
   bool loading = true;
 
   //get household ID from user
-  String getHouseHold()
-  {
+  String getHouseHold() {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
     String id = currentUser.uid;
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
-      houseID = value.data()['household'];
-      setState((){ loading = false; });
+    houseID = value.data()['household'];
+    setState((){ loading = false; });
     });
 
-    return houseID;
+    return
+    houseID;
   }
 
   void addNoteItem(String inputTitle, inputNote) async {
@@ -59,16 +59,15 @@ class _NotesListState extends State<NotesList> {
       name = "user is null";
     }
 
-    //store note in database
     firestoreInstance.collection("household").doc(householdID)
         .collection("notes")
         .add(
-        {
-          "Date": time,
-          "Note": inputNote,
-          "Title": inputTitle,
-          "User": name
-        }
+    {
+    "Date": time,
+    "Note": inputNote,
+    "Title": inputTitle,
+    "User": name
+    }
     );
   } // End of addTodoItem
 
@@ -116,7 +115,8 @@ class _NotesListState extends State<NotesList> {
                       children: <Widget>[
                         TextField(
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16.0),
                             hintText: 'Enter a note title',
                           ),
                           onSubmitted: (value) {
@@ -127,7 +127,8 @@ class _NotesListState extends State<NotesList> {
                         ),
                         TextField(
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16.0),
                             hintText: 'Enter a note body',
                           ),
                           onSubmitted: (value) {
@@ -140,18 +141,18 @@ class _NotesListState extends State<NotesList> {
                           padding: const EdgeInsets.symmetric(vertical: 16.0),
                           child: ElevatedButton(
                             onPressed: () {
-                              if(_title != null && _note != null){
+                              if (_title != null && _note != null) {
                                 addNoteItem(_title, _note);
                                 Navigator.pop(context);
                               }
-                              else{
+                              else {
                                 _showMyDialog();
                               }
                             },
                             child: Text('Submit'),
                           ),
                         ),
-                    ]
+                      ]
                   ),
                 ),
               );
@@ -170,40 +171,46 @@ class _NotesListState extends State<NotesList> {
   @override
   Widget build(BuildContext context) {
     String householdID;
-    householdID = getHouseHold();//does not work here
-    if(loading) return CircularProgressIndicator();
+    householdID = getHouseHold(); //does not work here
+    if (loading) return CircularProgressIndicator();
 
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Notes'),
-          centerTitle: true,
-        ),
-        body: StreamBuilder(
-            stream: Firestore.instance.collection("household").doc(householdID).collection("notes").orderBy('Date', descending: true).snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return const Text('Loading...');
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Notes'),
+        centerTitle: true,
+      ),
+      body: StreamBuilder(
+          stream: Firestore.instance.collection("household").doc(householdID)
+              .collection("notes").orderBy('Date', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return const Text('Loading...');
 
-                return ListView(
-                  children: snapshot.data.documents.map<Widget>((document) {
-                        return new NoteCard(
-                          note: NotesModel(title:document.data()['Title'], note: document.data()['Note'], now:format(document.data()['Date']), userName:document.data()['User'], id:document.id),
-                          delete: () {
-                            Firestore.instance.collection("household").doc(householdID).collection("notes").doc(document.id)
-                                .delete();
-                          },
-                        );
-                      }).toList()
-                );
-            }
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: pushAddNotesScreen,
-          tooltip: 'Add Note',
-          child: Icon(Icons.add),
-        ),
-      );// End of build
+            return ListView(
+                children: snapshot.data.documents.map<Widget>((document) {
+                  return new NoteCard(
+                    note: NotesModel(title: document.data()['Title'],
+                        note: document.data()['Note'],
+                        now: format(document.data()['Date']),
+                        userName: document.data()['User'],
+                        id: document.id),
+                    delete: () {
+                      Firestore.instance.collection("household").doc(
+                          householdID).collection("notes").doc(document.id)
+                          .delete();
+                    },
+                  );
+                }).toList()
+            );
+          }
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: pushAddNotesScreen,
+        tooltip: 'Add Note',
+        child: Icon(Icons.add),
+      ),
+    ); // End of build
   }
 }
-
-

@@ -14,17 +14,25 @@ class HomeCalendar extends StatefulWidget {
 
 class _HomeCalState extends State<HomeCalendar> {
 
-  String houseID;//needs to be declared outside of gethouseHold or it won't work
+  String houseID; //needs to be declared outside of gethouseHold or it won't work
+  bool loadingHouse = true;
+  bool loadingData = true;
+  MeetingDataSource eventData;
+  List<Meeting> appointments = <Meeting>[];
 
   //get household ID from user
-  String getHouseHold()
-  {
+  String getHouseHold() {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
     String id = currentUser.uid;
     //print('user id {$id}');
-    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+    databaseReference.collection("users").doc(currentUser.uid).get().then((
+        value) {
       houseID = value.data()['household'];
+      setState(() {
+        loadingHouse = false;
+      });
+      //return houseID;
     });
     //print('house id in getHouseHold {$houseID}');
     return houseID;
@@ -53,166 +61,195 @@ class _HomeCalState extends State<HomeCalendar> {
           "isAllDay": true,
         }
     );
-  }  // addEventItem
+  } // addEventItem
 
-  void pushAddEvent(){
+  void pushAddEvent() {
     //declare variables to store for upload
     DateTime _start;
     DateTime _end;
     String _eventName;
 
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) {
-          return new Scaffold(
-            appBar: AppBar(
-              title: Text("new Event"),
-            ),
-            body: new Container(
-              child: new Column(
-                children: <Widget>[
-                  RaisedButton( //Start Date
-                    child: Text('Select Start Date'),
-                    onPressed: () {
-                      showDatePicker(
-                        context: context,
-                          initialDate: _start == null ? DateTime.now() : _start,
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2077)
-                      ).then((date) {
-                          setState(() {
-                            _start = date;
-                        });
-                      });
-                    },
+        MaterialPageRoute(
+            builder: (context) {
+              return new Scaffold(
+                  appBar: AppBar(
+                    title: Text("new Event"),
                   ),
+                  body: new Container(
+                    child: new Column(
+                      children: <Widget>[
+                        RaisedButton( //Start Date
+                          child: Text('Select Start Date'),
+                          onPressed: () {
+                            showDatePicker(
+                                context: context,
+                                initialDate: _start == null
+                                    ? DateTime.now()
+                                    : _start,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2077)
+                            ).then((date) {
+                              setState(() {
+                                _start = date;
+                              });
+                            });
+                          },
+                        ),
 
-                  RaisedButton( //END  Date
-                    child: Text('Select End Date'),
-                    onPressed: () {
-                      showDatePicker(
-                          context: context,
-                          initialDate: _end == null ? DateTime.now() : _end,
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2077)
-                      ).then((date) {
-                        setState(() {
-                          _end = date;
-                        });
-                      });
-                    },
-                  ),
+                        RaisedButton( //END  Date
+                          child: Text('Select End Date'),
+                          onPressed: () {
+                            showDatePicker(
+                                context: context,
+                                initialDate: _end == null
+                                    ? DateTime.now()
+                                    : _end,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2077)
+                            ).then((date) {
+                              setState(() {
+                                _end = date;
+                              });
+                            });
+                          },
+                        ),
 
-                  TextField(
-                    decoration:
-                    InputDecoration(
-                      contentPadding: const EdgeInsets.all(16),
-                      hintText: _eventName == null ?'Enter event name' : _eventName,
-                    ),
-                    onSubmitted: (value) {
-                      setState(() {
-                        _eventName = value;
-                      });
-                    },
-                  ),
+                        TextField(
+                          decoration:
+                          InputDecoration(
+                            contentPadding: const EdgeInsets.all(16),
+                            hintText: _eventName == null
+                                ? 'Enter event name'
+                                : _eventName,
+                          ),
+                          onSubmitted: (value) {
+                            setState(() {
+                              _eventName = value;
+                            });
+                          },
+                        ),
 
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                       // _eventName = "banana";
-                        //validate and create event if form valid
-                        if(_start != null && _end != null && _eventName != null){
-                          addEventItem(_eventName, _start, _end);
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Text('Submit'),
-                    ),
-                  ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // _eventName = "banana";
+                              //validate and create event if form valid
+                              if (_start != null && _end != null &&
+                                  _eventName != null) {
+                                addEventItem(_eventName, _start, _end);
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: Text('Submit'),
+                          ),
+                        ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                          Navigator.pop(context);
-                      },
-                      child: Text('Cancel'),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Cancel'),
+                          ),
+                        )
+
+                      ],
                     ),
                   )
-
-                ],
-              ),
-            )
-          );
-        } //builder
-      )
+              );
+            } //builder
+        )
     ); //nav
   } //pushAddEvent
 
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    String householdID;
+    MeetingDataSource calendarData;
+    calendarData = MeetingDataSource(appointments);
+    householdID = getHouseHold();
+    //if(loadingHouse) return CircularProgressIndicator();
+    if (loadingHouse || loadingData) {
+      loadingData = false;
+      getCalendarDataSource();
+      return CircularProgressIndicator();
+    }
+      return Scaffold(
         body: Container(
           child: SfCalendar(
             view: CalendarView.month,
             showNavigationArrow: true,
             todayHighlightColor: Colors.grey,
-            dataSource: getCalendarDataSource(),
-            monthViewSettings: MonthViewSettings( //TODO: REREAD THIS
-              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment
+            dataSource: calendarData,
+            monthViewSettings: MonthViewSettings(
+                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment
             ),
           ),
         ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: pushAddEvent,
-        tooltip: 'Add Note',
-        child: Icon(Icons.add),
-      ),
-    );
-  } // Widget
-}
+        floatingActionButton: FloatingActionButton(
+          onPressed: pushAddEvent,
+          tooltip: 'Add Note',
+          child: Icon(Icons.add),
+        ),
+      );
+    }// Widget
+
 
 //a list for general meetings that can be adjusted
-MeetingDataSource getCalendarDataSource() {
-  List<Meeting> appointments=<Meeting>[];
-  appointments.add(Meeting(
-    from: DateTime.now(),
-    to: DateTime.now().add(const Duration(hours: 1)),
-    eventName: 'Meeting',
-    isAllDay: true,
-  ));
-  appointments.add(Meeting(
-    from: DateTime(DateTime.now().year, DateTime.now().month +1, 0, 0),
-    to: DateTime(DateTime.now().year, DateTime.now().month +1, 0, 1),
-    eventName: 'Rent Due',
-    isAllDay: true,
-  ));
-  Firestore.instance.collection("household").doc("RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("events").get().then((querySnapshot) {
-    querySnapshot.docs.forEach((result) {
-            appointments.add(Meeting(
-              from: result.data()['from'].toDate(),
-              to: result.data()['to'].toDate(),
-              eventName: result.data()['eventName'],
-              isAllDay: true,
-            ));
-            print(result.data()["eventName"] + "IN THE INSTANCE");
-            /*print(result.data()["to"].toDate().runtimeType);
-            print("*****************************\n");*/
-          });
+void getCalendarDataSource() {
+  //HARD CODED EVENTS
+    //List<Meeting> appointments = <Meeting>[];
+    appointments.add(Meeting(
+      from: DateTime.now(),
+      to: DateTime.now().add(const Duration(hours: 1)),
+      eventName: 'Meeting',
+      isAllDay: true,
+    ));
+    appointments.add(Meeting(
+      from: DateTime(DateTime.now().year, DateTime.now().month + 1, 0, 0),
+      to: DateTime(DateTime
+          .now()
+          .year, DateTime
+          .now()
+          .month + 1, 0, 1),
+      eventName: 'Rent Due',
+      isAllDay: true,
+    ));
+    //END HARD CODED EVENTS
+
+    Firestore.instance.collection("household").doc(
+        "RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("events").get().then((
+        querySnapshot) {
+      //print("searching");
+      querySnapshot.docs.forEach((result) {
+        appointments.add(Meeting(
+          from: result.data()['from'].toDate(),
+          to: result.data()['to'].toDate(),
+          eventName: result.data()['eventName'],
+          isAllDay: true,
+        ));
+        //print(result.data()["eventName"] + " IN THE INSTANCE");
+      });
+      //print("REACHED END OF FOR EACH");
+      /*
+      if(appointments.isEmpty){
+        print('WHY ARE YOU EMPTY');
+      }else {
+        print(appointments.length);
+      }*/
+      //setState(() {loadingData = false;});
     });
-  print("returning early?");
-
-  return MeetingDataSource(appointments);
+    //return MeetingDataSource(appointments);
+  }
 }
 
-DateTime format(){
 
-}
 //Constructor from calendar, will assign to calendarDataSource
 class MeetingDataSource extends CalendarDataSource{
     MeetingDataSource(List<Meeting> source){
@@ -228,7 +265,6 @@ class MeetingDataSource extends CalendarDataSource{
     }
     @override
     String getSubject(int index) {
-      print(appointments[index].eventName);
       return appointments[index].eventName;
     }
     @override
