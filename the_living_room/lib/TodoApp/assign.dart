@@ -5,9 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class MemberList extends StatelessWidget {
-  MemberList(this.todoId);
 
   final String todoId;
+  MemberList({this.todoId});
   //MemberList({Key key, @required this.todoId}) : super(key: key);
 
   final id = FirebaseAuth.instance.currentUser.uid;
@@ -22,17 +22,20 @@ class MemberList extends StatelessWidget {
           return Text('Something went wrong');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return Text("Loading");
         }
+        else {
+          return new ListView(
+            children: snapshot.data.docs.map((DocumentSnapshot document) {
+              print(document.data()['name']);
+                return new MemberTile(
+                  member: Member(name: document.data()['name'], taskId: todoId),
+                );
 
-        return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
-            return new MemberTile(
-              member: Member(name: document.data()['name'], taskId: todoId),
-            );
-          }).toList(),
-        );
+            }).toList(),
+          );
+        }
       },
     );
   }
@@ -55,7 +58,7 @@ class _AssignToRoomateState extends State<AssignToRoomate> {
         title: Text("Assign To..."),
         centerTitle: true,
       ),
-      body: MemberList(widget.todo.id),
+      body: MemberList(todoId: widget.todo.id),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           String hey = widget.todo.id;
