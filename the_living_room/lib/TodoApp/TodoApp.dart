@@ -16,14 +16,43 @@ class ToDoApp extends StatelessWidget {
   }
 }
 
-class TaskList extends StatelessWidget {
+class TaskList extends StatefulWidget {
+
+  @override
+  _TaskListState createState() => _TaskListState();
+}
+
+class _TaskListState extends State<TaskList> {
+  String houseID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;//Needs to be declared outside of getHouseHold or it won't work
+  bool loading = true;
+
+
+  String getHouseHold()
+  {
+    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
+    final databaseReference = FirebaseFirestore.instance;
+    //print('user id {$id}');
+
+    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
+      houseID = value.data()['household'];
+      setState((){ loading = false; });
+    });
+
+    // print('house id in getHouseHold {$houseID}');
+
+    return houseID;
+  }
+
   @override
 
   Widget build(BuildContext context) {
-    CollectionReference tasks = FirebaseFirestore.instance.collection('household').doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1').collection('tasks');
-    return StreamBuilder<QuerySnapshot>(
-      stream: tasks.snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    String householdID;
+    householdID = getHouseHold();//does not work here
+    if(loading) return CircularProgressIndicator();
+    print('house id in build {$householdID}');
+    return StreamBuilder(
+      stream:FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').snapshots(),
+      builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong');
         }
@@ -33,11 +62,11 @@ class TaskList extends StatelessWidget {
         }
 
         return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
+          children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
             return new ToDoCard(
               toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated'], id:document.id),
               delete: () {
-                tasks.doc(document.id)
+                FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').doc(document.id)
                     .delete();
               },
             );
@@ -55,45 +84,10 @@ class ToDoList extends StatefulWidget {
 }
 
 class _ToDoListState extends State<ToDoList> {
-/*
-  String houseID;
-  bool loading = true;
-  String getHid()
-  {
-    final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
-    final databaseReference = FirebaseFirestore.instance;
-    String uid = currentUser.uid;
-    //print('user id {$uid}');
-    databaseReference.collection("users").doc(currentUser.uid).get().then((value){
-      houseID = value.data()['household'];
-      setState((){ loading = false; });
-    });
-    if(houseID != null)
-      loading = false;
-    //print('house id in getHouseHold {$houseID}');
-    return houseID;
-  }
-  void addNoteItem(String entry) {
-    //String householdID = await getHid(); //works here
-    //print('house id in addNoteItem {$householdID}');
-    //return Future.delayed(Duration(milliseconds: 500));
-    getHid().then(value);
-  }
-*/
-
-  void getData() {
-    Future.delayed(Duration(seconds: 3), (){
-      print('yoshi');
-    });
-  }
 
   @override
+
   Widget build(BuildContext context) {
-    //String householdID;
-    //addNoteItem(householdID);//does not work here
-    // if(loading) return CircularProgressIndicator();
-    //print('house id in build {$householdID}');
-    //loading = false;
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo List'),
