@@ -201,17 +201,7 @@ class _HomeCalState extends State<HomeCalendar> {
     }// Widget
 
 
-/*
-void runCalendarDataSource() {
-  eventData = getCalendarDataSource();
-  setState((){loadingData = false;});
-}
-*/
-
 //a list for general meetings that can be adjusted
-//List<Meeting> appointments=<Meeting>[];
-
-  //MeetingDataSource getCalendarDataSource() {
 void getCalendarDataSource() {
   //HARD CODED EVENTS
     //List<Meeting> appointments = <Meeting>[];

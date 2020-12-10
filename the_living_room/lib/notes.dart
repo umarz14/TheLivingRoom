@@ -39,20 +39,21 @@ class _NotesListState extends State<NotesList> {
 
   String houseID;//Needs to be declared outside of getHouseHold or it won't work
   bool loading = true;
+
   //get household ID from user
   String getHouseHold()
   {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
     String id = currentUser.uid;
-    print('user id {$id}');
+    //print('user id {$id}');
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
       houseID = value.data()['household'];
       setState((){ loading = false; });
     });
 
-    print('house id in getHouseHold {$houseID}');
+    //print('house id in getHouseHold {$houseID}');
 
     return houseID;
   }
@@ -72,7 +73,7 @@ class _NotesListState extends State<NotesList> {
     }
 
     String householdID = getHouseHold(); //works here
-    print('house id in addNoteItem {$householdID}');
+    //print('house id in addNoteItem {$householdID}');
 
     final firestoreInstance = FirebaseFirestore.instance;
     firestoreInstance.collection("household").doc(householdID)
@@ -220,7 +221,7 @@ class _NotesListState extends State<NotesList> {
     String householdID;
     householdID = getHouseHold();//does not work here
     if(loading) return CircularProgressIndicator();
-    print('house id in build {$householdID}');
+    //print('house id in build {$householdID}');
 
       return Scaffold(
         appBar: AppBar(
@@ -240,6 +241,7 @@ class _NotesListState extends State<NotesList> {
                 );
             }
         ),
+
         floatingActionButton: FloatingActionButton(
           onPressed: pushAddNotesScreen,
           tooltip: 'Add Note',
@@ -248,64 +250,3 @@ class _NotesListState extends State<NotesList> {
       );// End of build
   }
 }
-
-//no longer using but keeping for reference until title input is done
-/*class NoteCard extends StatelessWidget {
-
-  final NotesModel aNoteItem; // Because this is stateful widget data can not change so we put final
-  final Function delete;
-
-  NoteCard( { this.aNoteItem, this.delete} ); // Constructor should be the same as the class
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            new Row(
-                children: <Widget>[
-                  new Expanded(child: new TextField(
-                      style: TextStyle(
-                        fontSize: 22.0,
-                        color: Colors.blue,
-                      ),
-                      decoration:
-                      InputDecoration(
-                        contentPadding: const EdgeInsets.all(22),
-                        hintStyle: TextStyle(
-                          fontSize: 22.0,
-                          color: Colors.blue,
-                        ),
-                        hintText: 'Title',
-                      ),
-                      onSubmitted: (newtitle){
-                        aNoteItem.title = newtitle;
-                      }
-                  ))
-                ]
-            ),
-            Text(
-              aNoteItem.note,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black,
-              ),
-            ),
-            Text(aNoteItem.now, style: TextStyle(fontSize: 16)),
-            Text(aNoteItem.userName, style: TextStyle(fontSize: 16)),
-            SizedBox(height: 6.0),
-            FlatButton.icon(
-                onPressed: delete,
-                icon: Icon(Icons.delete),
-                label: Text('delete')
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}*/
