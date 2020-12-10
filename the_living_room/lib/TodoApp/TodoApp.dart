@@ -57,10 +57,10 @@ class _TaskListState extends State<TaskList> {
           return Text('Something went wrong');
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return Text("Loading");
         }
-
+        else{
         return new ListView(
           children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
             return new ToDoCard(
@@ -72,10 +72,13 @@ class _TaskListState extends State<TaskList> {
             );
           }).toList(),
         );
-      },
+}
+        },
     );
   }
 }// End of Task List
+
+
 
 
 class ToDoList extends StatefulWidget {

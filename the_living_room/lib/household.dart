@@ -218,7 +218,7 @@ if(houseID == null){
 DocumentSnapshot idMap = await databaseReference.collection("emailToID").doc("source").get(); //get document which contains map of emails to uids
 newUserID = idMap.data()[username]; //grab user id
 */
-//future<String> name = asd;
+//future<String> name = asd; heeyyyy
   DocumentSnapshot inviteeDoc = await databaseReference.collection('users').doc(userID).get();
   String inviteeName = inviteeDoc.data()['name']; //get household ID from user document
   databaseReference.collection('household').doc(houseID).collection("member").doc(userID).set({
