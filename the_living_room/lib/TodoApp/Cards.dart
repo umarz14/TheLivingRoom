@@ -106,6 +106,7 @@ class MemberTile extends StatelessWidget {
                 .update({'delegated': member.name})
                 .then((value) => print("User Updated"))
                 .catchError((error) => print("Failed to update user: $error"));
+            Navigator.pop(context);
           },
         ),
       ),
