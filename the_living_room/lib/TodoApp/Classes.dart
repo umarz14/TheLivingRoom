@@ -4,28 +4,25 @@ class ToDoItem{
   String creator;
   String delegated;
   String id;
+  String hid;
 
   // Constructor
 
-  ToDoItem({this.todo, this.creator, this.delegated, this.id}); // We used named parameters so we can pass stuff in any other
+  ToDoItem({this.todo, this.creator, this.delegated, this.id, this.hid}); // We used named parameters so we can pass stuff in any other
 
 } // End of todoItem
-/*
-class Users {
-  String name;
-  String email;
-  String household;
-  User({this.name, this.email, this.household});
-}
-*/
+
 class Member {
 
   String name;
   String taskId;
-  Member({this.name, this.taskId});
+  String hid;
+  Member({this.name, this.taskId, this.hid});
 }
 
+/*
 class Data {
   ToDoItem text;
   Data({this.text});
 }
+*/
