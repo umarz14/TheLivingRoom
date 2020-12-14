@@ -18,10 +18,10 @@ class InheritedTodo extends InheritedWidget {
 
 //ToDo Card
 class ToDoCard extends StatelessWidget {
-
+  final String hid;
   final ToDoItem toDoItem; // Because this is stateful widget data can not change so we put final
   final Function delete;
-  ToDoCard( { this.toDoItem, this.delete } ); // Constructor should be the same as the class
+  ToDoCard( { this.toDoItem, this.delete, this.hid } ); // Constructor should be the same as the class
 
 
   @override
@@ -51,18 +51,22 @@ class ToDoCard extends StatelessWidget {
                     textColor: Colors.black,
                     onPressed: (){
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AssignToRoomate(todo: toDoItem)),
+                        MaterialPageRoute(builder: (context) => AssignToRoommate(todo: toDoItem)),
                       );
                     },
                   ),
                 ),
-                SizedBox(width: 10, height: 10,),
-                Text(toDoItem.delegated)
               ],
             ),
             SizedBox(height: 6.0),
-            Text(
-                toDoItem.creator
+            Row(
+              children: [
+                Text(
+                    toDoItem.creator
+                ),
+                SizedBox(width: 120, height: 10,),
+                Text(toDoItem.delegated),
+              ],
             ),
             FlatButton.icon(
                 onPressed: delete,
@@ -100,7 +104,7 @@ class MemberTile extends StatelessWidget {
             print('$lol');
             FirebaseFirestore.instance
                 .collection('household')
-                .doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1')
+                .doc(member.hid)
                 .collection('tasks')
                 .doc(lol)
                 .update({'delegated': member.name})

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
-void addTodoItem(String tdi) {
 
-
+void addTodoItem(String tdi, String hid) {
   //Get the name of the creator
   String nameOfCreator = 'me';
   final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
@@ -18,7 +17,7 @@ void addTodoItem(String tdi) {
   // This add task to database
   FirebaseFirestore.instance
       .collection('household')
-      .doc('RRpXs6hUf2e7nXlNp5I0Az0ci9r1')
+      .doc(hid)
       .collection('tasks')
       .add({
     "creator": nameOfCreator,
@@ -33,11 +32,23 @@ void addTodoItem(String tdi) {
 // This function creates a new screen in top of our current screen where
 // one can add items
 class PushAddToDoScreen extends StatefulWidget {
+  final String houseId;
+  PushAddToDoScreen({Key key, @required this.houseId})  :  super(key: key);
+
   @override
   _PushAddToDoScreenState createState() => _PushAddToDoScreenState();
 }
 
 class _PushAddToDoScreenState extends State<PushAddToDoScreen> {
+  final _text = TextEditingController();
+  bool _validate = false;
+
+  @override
+  void dispose() {
+    _text.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,16 +57,23 @@ class _PushAddToDoScreenState extends State<PushAddToDoScreen> {
         centerTitle: true,
       ),
       body: TextField(
+        controller: _text,
+        maxLength: 30,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(16),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.grey, width: 2)
           ),
           hintText: 'What Is The New Task?',
+          //errorText: "Value Can't Be Empty"
         ),
         onSubmitted: (toDoTask){
-          addTodoItem(toDoTask);
-          Navigator.pop(context);
+          _text.text.isEmpty ? _validate = true : _validate = false;
+            if (_validate != true) {
+              addTodoItem(toDoTask, widget.houseId);
+              Navigator.pop(context);
+            }
+
         },
       ),
     );
