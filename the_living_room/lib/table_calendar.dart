@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:validators/sanitizers.dart';
 
 
 class HomeCalendar extends StatefulWidget {
@@ -24,7 +22,6 @@ class _HomeCalState extends State<HomeCalendar> {
   String getHouseHold() {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-    String id = currentUser.uid;
     //print('user id {$id}');
     databaseReference.collection("users").doc(currentUser.uid).get().then((
         value) {
@@ -40,13 +37,9 @@ class _HomeCalState extends State<HomeCalendar> {
 
   //function that allows user to add event
   void addEventItem(String eventName, DateTime start, DateTime end) async {
-    String name;
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      name = currentUser.displayName;
-    }
-    else {
-      name = "user is null";
+    if (currentUser == null) {
+      print("User is NULL");
     }
     String householdID = getHouseHold(); //works here
     //print('house id in addNoteItem {$householdID}');
@@ -172,6 +165,7 @@ class _HomeCalState extends State<HomeCalendar> {
     String householdID;
     MeetingDataSource calendarData;
     calendarData = MeetingDataSource(appointments);
+    //causes error, but function sets global, so leave for now
     householdID = getHouseHold();
     //if(loadingHouse) return CircularProgressIndicator();
     if (loadingHouse || loadingData) {
@@ -234,18 +228,9 @@ void getCalendarDataSource() {
           eventName: result.data()['eventName'],
           isAllDay: true,
         ));
-        //print(result.data()["eventName"] + " IN THE INSTANCE");
       });
-      //print("REACHED END OF FOR EACH");
-      /*
-      if(appointments.isEmpty){
-        print('WHY ARE YOU EMPTY');
-      }else {
-        print(appointments.length);
-      }*/
-      //setState(() {loadingData = false;});
+
     });
-    //return MeetingDataSource(appointments);
   }
 }
 
