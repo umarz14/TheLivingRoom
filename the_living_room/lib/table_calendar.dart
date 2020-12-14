@@ -162,11 +162,12 @@ class _HomeCalState extends State<HomeCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    String householdID;
+    //String householdID;
     MeetingDataSource calendarData;
     calendarData = MeetingDataSource(appointments);
     //causes error, but function sets global, so leave for now
-    householdID = getHouseHold();
+    //householdID = getHouseHold();
+    getHouseHold();
     //if(loadingHouse) return CircularProgressIndicator();
     if (loadingHouse || loadingData) {
       loadingData = false;

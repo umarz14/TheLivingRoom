@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as path;
+//import 'package:path/path.dart' as path;
 
 class Household extends StatefulWidget {
   @override
@@ -67,7 +67,7 @@ class _Uploadstate extends State<Upload> {
 
   File _image;
   File _imageList;
-  String _uploadedFileURL;
+  //String _uploadedFileURL;
   final picker = ImagePicker();
 
   @override
@@ -79,7 +79,7 @@ class _Uploadstate extends State<Upload> {
         _image = image;
       });
 
-      _uploadedFileURL = path.basename(_image.path);
+     // _uploadedFileURL = path.basename(_image.path);
 
       //Reference ref = FirebaseStorage.instance.ref('Documents').child(
       //    _uploadedFileURL);
