@@ -17,15 +17,58 @@ class ToDoApp extends StatelessWidget {
 }
 
 class TaskList extends StatefulWidget {
+  final String hid;
+  TaskList({this.hid});
 
   @override
   _TaskListState createState() => _TaskListState();
 }
 
 class _TaskListState extends State<TaskList> {
-  String houseID = 'RRpXs6hUf2e7nXlNp5I0Az0ci9r1' ;//Needs to be declared outside of getHouseHold or it won't work
-  bool loading = true;
 
+  @override
+
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream:FirebaseFirestore.instance.collection('household').doc(widget.hid).collection('tasks').snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Something went wrong');
+        }
+
+        if (!snapshot.hasData) {
+          return Text("Loading");
+        }
+        else{
+        return new ListView(
+          children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
+            return new ToDoCard(
+              toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated'], id:document.id, hid: widget.hid),
+              delete: () {
+                FirebaseFirestore.instance.collection('household').doc(widget.hid).collection('tasks').doc(document.id)
+                    .delete();
+              },
+              hid: widget.hid,
+            );
+          }).toList(),
+        );
+}
+        },
+    );
+  }
+}// End of Task List
+
+
+
+
+class ToDoList extends StatefulWidget {
+  @override
+  _ToDoListState createState() => _ToDoListState();
+}
+
+class _ToDoListState extends State<ToDoList> {
+  bool loading = true;
+  String houseID;
 
   String getHouseHold()
   {
@@ -46,61 +89,22 @@ class _TaskListState extends State<TaskList> {
   @override
 
   Widget build(BuildContext context) {
+
     String householdID;
     householdID = getHouseHold();//does not work here
     if(loading) return CircularProgressIndicator();
     print('house id in build {$householdID}');
-    return StreamBuilder(
-      stream:FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text('Something went wrong');
-        }
 
-        if (!snapshot.hasData) {
-          return Text("Loading");
-        }
-        else{
-        return new ListView(
-          children: snapshot.data.docs.map<Widget>((DocumentSnapshot document) {
-            return new ToDoCard(
-              toDoItem: ToDoItem(todo:document.data()['task'], creator: document.data()['creator'], delegated:document.data()['delegated'], id:document.id),
-              delete: () {
-                FirebaseFirestore.instance.collection('household').doc(householdID).collection('tasks').doc(document.id)
-                    .delete();
-              },
-            );
-          }).toList(),
-        );
-}
-        },
-    );
-  }
-}// End of Task List
-
-
-
-
-class ToDoList extends StatefulWidget {
-  @override
-  _ToDoListState createState() => _ToDoListState();
-}
-
-class _ToDoListState extends State<ToDoList> {
-
-  @override
-
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo List'),
         centerTitle: true,
       ),
-      body: TaskList(),
+      body: TaskList(hid: householdID),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => PushAddToDoScreen())
+              MaterialPageRoute(builder: (context) => PushAddToDoScreen(houseId: householdID,))
           );
         },
         tooltip: 'Add Task',

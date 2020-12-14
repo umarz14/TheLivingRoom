@@ -183,6 +183,7 @@ class _RoomiesState extends State<Roomies> {
                   onPressed: () {
                     final text = myController.text.toLowerCase();
                     addHouseholdMember(text);
+                    Navigator.pop(context);
                   },
                   child: Text("Submit"),
                 ),
