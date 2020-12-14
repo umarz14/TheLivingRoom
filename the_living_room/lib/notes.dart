@@ -32,7 +32,7 @@ class _NotesListState extends State<NotesList> {
   String getHouseHold() {
     final auth.User currentUser = auth.FirebaseAuth.instance.currentUser;
     final databaseReference = FirebaseFirestore.instance;
-    String id = currentUser.uid;
+    //String id = currentUser.uid;
 
     databaseReference.collection("users").doc(currentUser.uid).get().then((value){
     houseID = value.data()['household'];
@@ -180,7 +180,7 @@ class _NotesListState extends State<NotesList> {
         centerTitle: true,
       ),
       body: StreamBuilder(
-          stream: Firestore.instance.collection("household").doc(householdID)
+          stream: FirebaseFirestore.instance.collection("household").doc(householdID)
               .collection("notes").orderBy('Date', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
@@ -196,7 +196,7 @@ class _NotesListState extends State<NotesList> {
                         userName: document.data()['User'],
                         id: document.id),
                     delete: () {
-                      Firestore.instance.collection("household").doc(
+                      FirebaseFirestore.instance.collection("household").doc(
                           householdID).collection("notes").doc(document.id)
                           .delete();
                     },

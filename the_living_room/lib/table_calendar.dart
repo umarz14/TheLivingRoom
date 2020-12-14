@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:validators/sanitizers.dart';
 
 
 class HomeCalendar extends StatefulWidget {
@@ -223,7 +221,7 @@ void getCalendarDataSource() {
     ));
     //END HARD CODED EVENTS
 
-    Firestore.instance.collection("household").doc(
+    FirebaseFirestore.instance.collection("household").doc(
         "RRpXs6hUf2e7nXlNp5I0Az0ci9r1").collection("events").get().then((
         querySnapshot) {
       //print("searching");
